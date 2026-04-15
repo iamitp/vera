@@ -9,7 +9,7 @@ from rich.markdown import Markdown
 from .config import VERA_HOME, MEMORY_DIR, AUDIT_DIR, RULES_FILE, PROVENANCE_LOG, detect_provider
 from .provenance import SYSTEM_ADDENDUM, log_write
 from .rules import ensure_rules, check_response, DEFAULT_RULES
-from .llm import chat
+from .llm import chat as _llm_chat
 from .audit import run_audit
 
 console = Console()
@@ -110,7 +110,7 @@ def chat():
         system = build_system(rules_text, memory_summary)
 
         for attempt in range(2):
-            response = chat(provider, system, messages)
+            response = _llm_chat(provider, system, messages)
             violation = check_response(response, rules_text)
             if not violation:
                 break
@@ -118,7 +118,7 @@ def chat():
                 {"role": "assistant", "content": response},
                 {"role": "user", "content": violation},
             ]
-            response = chat(provider, system, messages_retry)
+            response = _llm_chat(provider, system, messages_retry)
 
         messages.append({"role": "assistant", "content": response})
         console.print()
