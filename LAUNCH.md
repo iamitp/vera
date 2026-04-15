@@ -10,7 +10,7 @@
 >
 > Local markdown. Any model. One command:
 >
-> `pipx install vera-ai && vera init && vera chat`
+> `pipx install git+https://github.com/iamitp/vera && vera init && vera chat`
 >
 > MIT. Free forever. github.com/iamitp/vera
 
@@ -43,7 +43,7 @@ What makes it different from Khoj / Mem0 / Letta / MemPalace:
 - **Provenance tags** on every memory write (OBSERVED / INFERRED / ASSUMED / CANDIDATE — the four categories are enforced in the system prompt)
 - **No vendor lock-in** (markdown on your disk, BYO API key, works with Claude or GPT)
 
-MIT. Python 3.10+. `pipx install vera-ai`.
+MIT. Python 3.10+. `pipx install git+https://github.com/iamitp/vera`.
 
 Repo: https://github.com/iamitp/vera
 

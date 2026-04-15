@@ -13,11 +13,13 @@ Every other AI memory layer makes your model remember more. Vera makes your mode
 ## Install
 
 ```bash
-pipx install vera-ai
+pipx install git+https://github.com/iamitp/vera
 export ANTHROPIC_API_KEY=sk-ant-...   # or OPENAI_API_KEY
 vera init
 vera chat
 ```
+
+_(PyPI release coming — `pipx install vera-ai` once that lands.)_
 
 That's it.
 
