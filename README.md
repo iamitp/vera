@@ -1,15 +1,29 @@
 # Vera
 
-**Turn any AI into one that tells you when it's guessing.**
+**AI that admits when it's guessing.**
 
-Every AI tells confident lies sometimes. Vera is a thin layer that forces whichever model you use to separate what it *knows* from what it is *making up*, and to admit uncertainty out loud.
+Every AI will confidently tell you wrong things. Vera makes your AI flag when it's guessing, cite when it's sure, and call out its own BS when you ask.
 
-Works in any AI chat (Claude, ChatGPT, Gemini, Grok, Copilot) or via any LLM API you have a key for.
+Paste Vera into Claude, ChatGPT, Gemini, or any AI chat. Zero install to try.
 
-- **Honesty on every claim.** Tags each factual line: `[OBSERVED]`, `[INFERRED low|med|high]`, `[ASSUMED]`, `[EXTERNAL source]`. No untagged claims.
-- **Rule enforcement, not rule recall.** Your rules block the model, they do not just remind it.
-- **Self-audit on demand.** Type `/audit` and the model reviews its own recent turns for sycophancy, hedging, unsupported claims.
-- **Local memory (CLI).** Markdown on your disk. You own it, you grep it, you sync it.
+[**Try it in 30 seconds →**](PROMPT.md)
+
+---
+
+## What changes
+
+Ask a regular AI a hard factual question and you get one paragraph of smooth prose. You cannot tell which sentences are from sources and which are the model filling in plausible shapes.
+
+Ask Vera the same question and you get the same answer with every claim tagged. `[EXTERNAL: FOMC minutes October 2024]` on what it actually cites. `[INFERRED low]` on what it is extrapolating. `[ASSUMED]` on what it made up because it wasn't told. You can see which lines to trust on sight.
+
+Type `/audit` after a few turns and the model reviews its own answers for sycophancy, hedging, and unsupported claims. It will flag itself. The worst it has ever said: nothing to flag.
+
+## Under the hood
+
+- Every factual claim tagged: `[OBSERVED]`, `[INFERRED low|med|high]`, `[ASSUMED]`, `[EXTERNAL source]`.
+- Sycophantic openers ("great question", "absolutely", "I'd be happy to") banned and regenerated.
+- `/audit` produces a short structured self-critique.
+- CLI version (below) adds a second model as the auditor, hard rule-blocking, and markdown memory on disk.
 
 ## Taste it in 30 seconds (no install, no API key)
 

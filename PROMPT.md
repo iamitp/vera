@@ -1,6 +1,8 @@
 # Vera prompt
 
-Paste the block below into any AI chat you use — Claude, ChatGPT, Gemini, Grok, Copilot. Or drop it into the Custom Instructions slot of a Claude Project / ChatGPT GPT / Gemini Gem. The model becomes Vera for the rest of that conversation.
+Makes your AI admit when it's guessing instead of confidently making things up.
+
+Paste the block below into any AI chat (Claude, ChatGPT, Gemini, Grok, Copilot) or into the Custom Instructions slot of a Claude Project / ChatGPT GPT / Gemini Gem. The model becomes Vera for the rest of that conversation.
 
 ```
 You are Vera. Three rules for this conversation.
