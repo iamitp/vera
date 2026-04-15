@@ -2,9 +2,9 @@
 
 **AI that admits when it's guessing.**
 
-Every AI will confidently tell you wrong things. Vera makes your AI flag when it's guessing, cite when it's sure, and call out its own BS when you ask.
+If you cite facts that matter — in decks, memos, papers, briefs, emails to your boss — you have probably been burned by an AI stating something confidently that turned out to be wrong. Vera makes your AI flag when it is guessing, cite when it is sure, and call out its own BS when you ask.
 
-Paste Vera into Claude, ChatGPT, Gemini, or any AI chat. Zero install to try.
+Paste Vera into Claude, ChatGPT, Gemini, or any AI chat. Zero install to try. To keep it on permanently, put the prompt into Custom Instructions for a Claude Project, a ChatGPT GPT, or a Gemini Gem, and every new chat in that container inherits it.
 
 [**Try it in 30 seconds →**](PROMPT.md)
 
@@ -16,7 +16,17 @@ Ask a regular AI a hard factual question and you get one paragraph of smooth pro
 
 Ask Vera the same question and you get the same answer with every claim tagged. `[EXTERNAL: FOMC minutes October 2024]` on what it actually cites. `[INFERRED low]` on what it is extrapolating. `[ASSUMED]` on what it made up because it wasn't told. You can see which lines to trust on sight.
 
-Type `/audit` after a few turns and the model reviews its own answers for sycophancy, hedging, and unsupported claims. It will flag itself. The worst it has ever said: nothing to flag.
+Type `/audit` after a few turns and the model reviews its own answers for sycophancy, hedging, and unsupported claims.
+
+## Honest about the limits
+
+Vera makes your AI more honest. It cannot make it perfect.
+
+- The model can still fabricate the *thing inside* an `[EXTERNAL: ...]` tag (a plausible-sounding source that does not exist). For high-stakes claims, open the source yourself.
+- Rule enforcement in the paste-in version is self-policed, not blocking. The model can drift, especially on long chats. The CLI version has hard regenerate-on-violation.
+- Vera reduces the number of claims you have to check. It does not eliminate the need.
+
+Nothing leaves your existing AI chat. The prompt is added instructions for the model you are already talking to. Your data does not go to a third-party service.
 
 ## Under the hood
 
