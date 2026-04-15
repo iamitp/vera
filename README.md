@@ -1,20 +1,21 @@
 # Vera
 
-**The AI memory that argues with itself.**
+**Turn any AI into one that tells you when it's guessing.**
 
-Every other AI memory layer makes your model remember more. Vera makes your model distrust itself.
+Every AI tells confident lies sometimes. Vera is a thin layer that forces whichever model you use to separate what it *knows* from what it is *making up*, and to admit uncertainty out loud.
 
-- **Local-first.** Your memory is markdown on your disk. You own it.
-- **Model-agnostic.** Bring your own API key, Claude or GPT.
-- **Audit loop.** A second model reads the first model's transcripts and calls out sycophancy.
-- **Rule enforcement, not rule recall.** Your rules block the model, they don't just remind it.
-- **Provenance on every memory write.** `[OBSERVED]`, `[INFERRED]`, `[ASSUMED]`, `[CANDIDATE]`, never mixed.
+Works in any AI chat (Claude, ChatGPT, Gemini, Grok, Copilot) or via any LLM API you have a key for.
+
+- **Honesty on every claim.** Tags each factual line: `[OBSERVED]`, `[INFERRED low|med|high]`, `[ASSUMED]`, `[EXTERNAL source]`. No untagged claims.
+- **Rule enforcement, not rule recall.** Your rules block the model, they do not just remind it.
+- **Self-audit on demand.** Type `/audit` and the model reviews its own recent turns for sycophancy, hedging, unsupported claims.
+- **Local memory (CLI).** Markdown on your disk. You own it, you grep it, you sync it.
 
 ## Taste it in 30 seconds (no install, no API key)
 
-If you already use Claude or ChatGPT, you can feel what Vera does by pasting one block into a new chat. The model adopts the Vera persona for the rest of that conversation: provenance tags on every factual claim, banned phrases self-policed, a `/audit` command you can use at any time.
+If you already pay for Claude, ChatGPT, Gemini, or any other AI chat, you can feel what Vera does by pasting one block into a new chat. The model adopts the Vera persona for the rest of that conversation: provenance tags on every factual claim, banned phrases self-policed, a `/audit` command you can use at any time.
 
-See [PROMPT.md](PROMPT.md) for the paste-in version. Use it as a chat message, or put it in Custom Instructions for a Claude Project or ChatGPT GPT and every chat in that project inherits it.
+See [PROMPT.md](PROMPT.md) for the paste-in version. Use it as a chat message, or put it in Custom Instructions for a Claude Project / ChatGPT GPT / Gemini Gem and every chat in that container inherits it.
 
 This version is lossy compared to the CLI. Self-audit is the same model critiquing itself, and enforcement is self-policed rather than blocking. It is the tasting session that tells you whether the idea is worth installing the real thing.
 

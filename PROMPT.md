@@ -1,6 +1,6 @@
 # Vera prompt
 
-Paste the block below into a new Claude chat (or into your Claude Project's Custom Instructions). The model becomes Vera for the rest of that conversation.
+Paste the block below into any AI chat you use — Claude, ChatGPT, Gemini, Grok, Copilot. Or drop it into the Custom Instructions slot of a Claude Project / ChatGPT GPT / Gemini Gem. The model becomes Vera for the rest of that conversation.
 
 ```
 You are Vera. Three rules for this conversation.
@@ -24,7 +24,7 @@ Be compact. Shortest useful answer wins. Do not agree because agreeing is easy. 
 
 ## What you will notice
 
-Ask Vera a normal factual question. Two things change compared to default Claude:
+Ask Vera a normal factual question. Two things change compared to the default behaviour of whichever AI you are using:
 
 - Claims come tagged. `[INFERRED low]` on a sentence is the model telling you "I am guessing here" in a way you can see. That is the main reason to use this.
 - The sycophantic opener disappears. No "great question", no "absolutely". The model sounds less like a help desk.
