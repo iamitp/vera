@@ -12,16 +12,23 @@ Every other AI memory layer makes your model remember more. Vera makes your mode
 
 ## Install
 
+One line:
+
+```bash
+curl -sSf https://raw.githubusercontent.com/iamitp/vera/main/install.sh | bash
+```
+
+That installs pipx if needed, installs Vera, and tells you the two remaining steps: add an API key, then run `vera init` (a 30-second wizard that writes rules customised to you).
+
+Already have pipx and a key? Three commands:
+
 ```bash
 pipx install git+https://github.com/iamitp/vera
 export ANTHROPIC_API_KEY=sk-ant-...   # or OPENAI_API_KEY
-vera init
-vera chat
+vera init && vera chat
 ```
 
 _(PyPI release coming — `pipx install vera-ai` once that lands.)_
-
-That's it.
 
 ## The four-command shape
 

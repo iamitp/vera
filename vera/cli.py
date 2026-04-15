@@ -75,14 +75,46 @@ def main():
     pass
 
 @main.command()
-def init():
-    """Create ~/vera/ with a starter rules file and empty memory."""
+@click.option("--quick", is_flag=True, help="Skip the wizard, write default rules only.")
+def init(quick):
+    """Interactive setup: three questions, then you have personalised rules."""
     VERA_HOME.mkdir(parents=True, exist_ok=True)
     MEMORY_DIR.mkdir(parents=True, exist_ok=True)
     AUDIT_DIR.mkdir(parents=True, exist_ok=True)
-    ensure_rules(RULES_FILE)
-    console.print(f"[green]Vera initialised at {VERA_HOME}[/green]")
-    console.print(f"Edit your rules: {RULES_FILE}")
+
+    if quick or not sys.stdin.isatty():
+        ensure_rules(RULES_FILE)
+        console.print(f"[green]Vera initialised at {VERA_HOME}[/green]")
+        console.print(f"Edit your rules: {RULES_FILE}")
+        console.print(f"Run: [bold]vera chat[/bold] to start.")
+        return
+
+    if RULES_FILE.exists():
+        if not click.confirm(f"{RULES_FILE} exists. Re-run the wizard (overwrites)?", default=False):
+            console.print(f"[dim]Kept existing rules. Run: [bold]vera chat[/bold][/dim]")
+            return
+
+    console.print("[bold]Vera setup[/bold] — three quick questions so your rules actually fit you.\n")
+    use = click.prompt("1. What do you use AI for most (one line)", type=str).strip()
+    stop = click.prompt("2. One thing you want AI to stop doing", type=str).strip()
+    banned_raw = click.prompt(
+        "3. Phrases you never want to see (comma-separated, or blank)",
+        default="", show_default=False,
+    ).strip()
+    banned = [p.strip() for p in banned_raw.split(",") if p.strip()]
+
+    personalised = DEFAULT_RULES.rstrip() + "\n"
+    personalised += "\n## Your profile (the system reads this on every turn)\n"
+    personalised += f"- Primary use: {use}\n"
+    personalised += f"- Asked to stop: {stop}\n"
+    if banned:
+        personalised += "\n## Your custom banned phrases\n"
+        for phrase in banned:
+            personalised += f'- "{phrase}"\n'
+    RULES_FILE.write_text(personalised)
+
+    console.print(f"\n[green]Vera initialised at {VERA_HOME}[/green]")
+    console.print(f"[dim]  Rules: {RULES_FILE} (edit freely — your rules, your binding)[/dim]\n")
     console.print(f"Run: [bold]vera chat[/bold] to start.")
 
 @main.command()
