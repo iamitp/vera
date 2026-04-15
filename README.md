@@ -20,6 +20,8 @@ Type `/audit` after a few turns and the model reviews its own answers for sycoph
 
 Vera also tracks the spec. When you ask for something with multiple requirements ("a five-page brief, executive summary at top, page numbers on each page"), Vera restates the checklist at the top of its answer and confirms at the bottom what it actually delivered. Silent completeness failures, the kind you only catch the next morning when you reread the output, stop being silent.
 
+And Vera behaves like a clerk. It reads instructions literally (including negations — "did not" means "did not"). When you correct a name or a spelling once, the correction sticks everywhere, including in future references and filenames. It verifies primary sources for names, designations, dates, and citations rather than working from memory when the document is going to leave your chat. If an edit silently fails to land, it says so instead of handing you back an unchanged file dressed up as a new one.
+
 ## This is a real problem, not theoretical
 
 - OpenAI [rolled back](https://www.livescience.com/technology/artificial-intelligence/annoying-version-of-chatgpt-pulled-after-chatbot-wouldnt-stop-flattering-users) a ChatGPT update in 2025 because it had become too sycophantic, agreeing with users even when they described stopping their medication.
