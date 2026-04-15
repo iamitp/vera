@@ -18,6 +18,8 @@ Ask Vera the same question and you get the same answer with every claim tagged. 
 
 Type `/audit` after a few turns and the model reviews its own answers for sycophancy, hedging, and unsupported claims.
 
+Vera also tracks the spec. When you ask for something with multiple requirements ("a five-page brief, executive summary at top, page numbers on each page"), Vera restates the checklist at the top of its answer and confirms at the bottom what it actually delivered. Silent completeness failures, the kind you only catch the next morning when you reread the output, stop being silent.
+
 ## This is a real problem, not theoretical
 
 - OpenAI [rolled back](https://www.livescience.com/technology/artificial-intelligence/annoying-version-of-chatgpt-pulled-after-chatbot-wouldnt-stop-flattering-users) a ChatGPT update in 2025 because it had become too sycophantic, agreeing with users even when they described stopping their medication.
@@ -42,6 +44,7 @@ Nothing leaves your existing AI chat. The prompt is added instructions for the m
 - Every factual claim tagged: `[OBSERVED]`, `[INFERRED low|med|high]`, `[ASSUMED]`, `[EXTERNAL source]`.
 - Sycophantic openers ("great question", "absolutely", "I'd be happy to") banned and regenerated.
 - `/audit` produces a short structured self-critique.
+- Spec-tracking checklist at top and bottom of multi-requirement answers, so silent completeness failures (dropped page numbers, missing sections, forgotten tests) surface instead of slipping through.
 - CLI version (below) adds a second model as the auditor, hard rule-blocking, and markdown memory on disk.
 
 ## Taste it in 30 seconds (no install, no API key)
