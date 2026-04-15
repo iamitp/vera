@@ -5,12 +5,20 @@
 Every other AI memory layer makes your model remember more. Vera makes your model distrust itself.
 
 - **Local-first.** Your memory is markdown on your disk. You own it.
-- **Model-agnostic.** Bring your own API key — Claude, GPT, whatever.
+- **Model-agnostic.** Bring your own API key, Claude or GPT.
 - **Audit loop.** A second model reads the first model's transcripts and calls out sycophancy.
 - **Rule enforcement, not rule recall.** Your rules block the model, they don't just remind it.
-- **Provenance on every memory write.** `[OBSERVED]`, `[INFERRED]`, `[ASSUMED]`, `[CANDIDATE]` — never mixed.
+- **Provenance on every memory write.** `[OBSERVED]`, `[INFERRED]`, `[ASSUMED]`, `[CANDIDATE]`, never mixed.
 
-## Install
+## Taste it in 30 seconds (no install, no API key)
+
+If you already use Claude or ChatGPT, you can feel what Vera does by pasting one block into a new chat. The model adopts the Vera persona for the rest of that conversation: provenance tags on every factual claim, banned phrases self-policed, a `/audit` command you can use at any time.
+
+See [PROMPT.md](PROMPT.md) for the paste-in version. Use it as a chat message, or put it in Custom Instructions for a Claude Project or ChatGPT GPT and every chat in that project inherits it.
+
+This version is lossy compared to the CLI. Self-audit is the same model critiquing itself, and enforcement is self-policed rather than blocking. It is the tasting session that tells you whether the idea is worth installing the real thing.
+
+## Install the CLI (30 more seconds)
 
 One line:
 
@@ -18,7 +26,7 @@ One line:
 curl -sSf https://raw.githubusercontent.com/iamitp/vera/main/install.sh | bash
 ```
 
-That installs pipx if needed, installs Vera, and tells you the two remaining steps: add an API key, then run `vera init` (a 30-second wizard that writes rules customised to you).
+That bootstraps pipx if needed, installs Vera, and prints the two remaining steps: add an API key, then run `vera init` (a 3-question wizard that writes rules customised to you).
 
 Already have pipx and a key? Three commands:
 
@@ -28,7 +36,14 @@ export ANTHROPIC_API_KEY=sk-ant-...   # or OPENAI_API_KEY
 vera init && vera chat
 ```
 
-_(PyPI release coming — `pipx install vera-ai` once that lands.)_
+_(PyPI release coming: `pipx install vera-ai` once that lands.)_
+
+## The CLI adds what the prompt cannot
+
+- A **second model** with different loyalty runs the audit. Not the same model critiquing itself.
+- Rule violations **fail the turn** and force a regenerate. Not self-policed.
+- Memory is **markdown on your disk**, greppable, diff-able, sync-able, durable across chat deletion.
+- Provenance is a **structured log** (`_log.jsonl`), not just tags inside prose.
 
 ## The four-command shape
 
