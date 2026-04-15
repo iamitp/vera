@@ -1,10 +1,10 @@
 # Vera
 
-**AI that admits when it's guessing.**
+**AI with clerk discipline.**
 
-If you cite facts that matter — in decks, memos, papers, briefs, emails to your boss — you have probably been burned by an AI stating something confidently that turned out to be wrong. Vera makes your AI flag when it is guessing, cite when it is sure, and call out its own BS when you ask.
+Reads instructions literally. Verifies names before writing them into documents. Tags claims by confidence so you see guesses on sight. Corrections stick. Silent failures surface. Audits itself on command.
 
-Paste Vera into Claude, ChatGPT, Gemini, or any AI chat. Zero install to try. To keep it on permanently, put the prompt into Custom Instructions for a Claude Project, a ChatGPT GPT, or a Gemini Gem, and every new chat in that container inherits it.
+Works in Claude, ChatGPT, Gemini, any AI chat. No install to try.
 
 [**Try it in 30 seconds →**](PROMPT.md)
 
@@ -12,62 +12,36 @@ Paste Vera into Claude, ChatGPT, Gemini, or any AI chat. Zero install to try. To
 
 ## What changes
 
-Ask a regular AI a hard factual question and you get one paragraph of smooth prose. You cannot tell which sentences are from sources and which are the model filling in plausible shapes.
+Ask a regular AI a hard factual question: one paragraph of smooth prose, every claim evenly confident. You cannot tell which sentences are from sources and which are the model filling in plausible shapes.
 
-Ask Vera the same question and you get the same answer with every claim tagged. `[EXTERNAL: FOMC minutes October 2024]` on what it actually cites. `[INFERRED low]` on what it is extrapolating. `[ASSUMED]` on what it made up because it wasn't told. You can see which lines to trust on sight.
+Ask Vera the same question: every factual line tagged. `[CITED: FOMC minutes Oct 2024]` on what it actually sourced. `[INFERRED low]` on what it is extrapolating. `[ASSUMED]` on what it guessed. You see which lines to trust on sight.
 
-Type `/audit` after a few turns and the model reviews its own answers for sycophancy, hedging, and unsupported claims.
+Correct a name or a spelling once: the correction sticks everywhere, including in filenames and future references. Ask for something with multiple parts (a brief, an executive summary, page numbers): Vera echoes the spec at the top and confirms what it delivered at the bottom. Negations in your instructions ("did not", "without") stay negated. Silent edit failures surface instead of coming back as unchanged output dressed up as new.
 
-Vera also tracks the spec. When you ask for something with multiple requirements ("a five-page brief, executive summary at top, page numbers on each page"), Vera restates the checklist at the top of its answer and confirms at the bottom what it actually delivered. Silent completeness failures, the kind you only catch the next morning when you reread the output, stop being silent.
+Type `/audit` after a few turns: the model reviews its own recent answers for sycophancy, hedging, and unsupported claims.
 
-And Vera behaves like a clerk. It reads instructions literally (including negations — "did not" means "did not"). When you correct a name or a spelling once, the correction sticks everywhere, including in future references and filenames. It verifies primary sources for names, designations, dates, and citations rather than working from memory when the document is going to leave your chat. If an edit silently fails to land, it says so instead of handing you back an unchanged file dressed up as a new one.
+## Why this exists
 
-## This is a real problem, not theoretical
+- OpenAI [rolled back a ChatGPT update](https://www.livescience.com/technology/artificial-intelligence/annoying-version-of-chatgpt-pulled-after-chatbot-wouldnt-stop-flattering-users) in 2025 for being too sycophantic.
+- Lawyers have been [fined](https://yro.slashdot.org/story/23/06/23/1917215/two-lawyers-fined-for-submitting-fake-court-citations-from-chatgpt) for fake AI citations. [Anthropic's own lawyer](https://techcrunch.com/2025/05/15/anthropics-lawyer-was-forced-to-apologize-after-claude-hallucinated-a-legal-citation/) had to apologise for a Claude hallucination in an Anthropic filing.
+- A [KPMG study](https://www.techtimes.com/articles/310167/20250429/workers-are-hiding-their-ai-usestudy-reveals-why-thats-big-problem-employers.htm) found 57% of employees hide their AI use from managers, partly from fear of being caught with hallucinated output.
+- Research cited in [Fortune](https://fortune.com/2026/03/29/ai-sycophantic-bad-advice-emerging-research-science-journal/) shows AI validates users 49% more often than humans do.
 
-- OpenAI [rolled back](https://www.livescience.com/technology/artificial-intelligence/annoying-version-of-chatgpt-pulled-after-chatbot-wouldnt-stop-flattering-users) a ChatGPT update in 2025 because it had become too sycophantic, agreeing with users even when they described stopping their medication.
-- Lawyers have been [fined](https://yro.slashdot.org/story/23/06/23/1917215/two-lawyers-fined-for-submitting-fake-court-citations-from-chatgpt) for submitting fake court citations generated by ChatGPT. [Anthropic's own lawyer](https://techcrunch.com/2025/05/15/anthropics-lawyer-was-forced-to-apologize-after-claude-hallucinated-a-legal-citation/) had to apologise after Claude hallucinated a citation in an Anthropic legal filing.
-- A [2025 KPMG study](https://www.techtimes.com/articles/310167/20250429/workers-are-hiding-their-ai-usestudy-reveals-why-thats-big-problem-employers.htm) found 57% of employees hide their AI use from managers, partly because the risk of being caught with hallucinated output is real.
-- A [2026 Fortune piece](https://fortune.com/2026/03/29/ai-sycophantic-bad-advice-emerging-research-science-journal/) cites research that AI validates users 49% more often than humans do, and that interacting with sycophantic AI makes people more morally rigid.
-
-Vera does not solve hallucination. It makes it visible so you can check the right lines, and it cuts the sycophancy that covers confident-wrong answers in warm prose. The cost of getting burned is real and recurring. The cost of Vera is thirty seconds of pasting a prompt.
+Vera does not solve hallucination. It makes it visible, so you know which lines need checking. The cost of getting burned is real and recurring. The cost of Vera is thirty seconds of pasting.
 
 ## Honest about the limits
 
-Vera makes your AI more honest. It cannot make it perfect.
+- The source inside a `[CITED: ...]` tag can itself be fabricated. Verify high-stakes citations yourself.
+- Enforcement in the paste-in version is self-policed, not blocking. The model can drift, especially on long chats. The CLI below has hard regenerate-on-violation and a second model running the audit.
+- Nothing leaves your existing AI chat. The prompt is extra instructions for the model you are already using.
 
-- The model can still fabricate the *thing inside* an `[EXTERNAL: ...]` tag (a plausible-sounding source that does not exist). For high-stakes claims, open the source yourself.
-- Rule enforcement in the paste-in version is self-policed, not blocking. The model can drift, especially on long chats. The CLI version has hard regenerate-on-violation.
-- Vera reduces the number of claims you have to check. It does not eliminate the need.
+## Keep it on permanently
 
-Nothing leaves your existing AI chat. The prompt is added instructions for the model you are already talking to. Your data does not go to a third-party service.
+To avoid re-pasting every chat, put the prompt into Custom Instructions for a [Claude Project](https://www.anthropic.com/news/projects), a [ChatGPT GPT](https://chatgpt.com/gpts), or a [Gemini Gem](https://gemini.google.com). Every new chat in that container inherits it.
 
-## Under the hood
+## CLI install
 
-- Every factual claim tagged: `[OBSERVED]`, `[INFERRED low|med|high]`, `[ASSUMED]`, `[EXTERNAL source]`.
-- Sycophantic openers ("great question", "absolutely", "I'd be happy to") banned and regenerated.
-- `/audit` produces a short structured self-critique.
-- Spec-tracking checklist at top and bottom of multi-requirement answers, so silent completeness failures (dropped page numbers, missing sections, forgotten tests) surface instead of slipping through.
-- CLI version (below) adds a second model as the auditor, hard rule-blocking, and markdown memory on disk.
-
-## Taste it in 30 seconds (no install, no API key)
-
-If you already pay for Claude, ChatGPT, Gemini, or any other AI chat, you can feel what Vera does by pasting one block into a new chat. The model adopts the Vera persona for the rest of that conversation: provenance tags on every factual claim, banned phrases self-policed, a `/audit` command you can use at any time.
-
-See [PROMPT.md](PROMPT.md) for the paste-in version. Use it as a chat message, or put it in Custom Instructions for a Claude Project / ChatGPT GPT / Gemini Gem and every chat in that container inherits it.
-
-This version is lossy compared to the CLI. Self-audit is the same model critiquing itself, and enforcement is self-policed rather than blocking. It is the tasting session that tells you whether the idea is worth installing the real thing.
-
-## Install the CLI (30 more seconds)
-
-One line:
-
-```bash
-curl -sSf https://raw.githubusercontent.com/iamitp/vera/main/install.sh | bash
-```
-
-That bootstraps pipx if needed, installs Vera, and prints the two remaining steps: add an API key, then run `vera init` (a 3-question wizard that writes rules customised to you).
-
-Already have pipx and a key? Three commands:
+For users who want hard rule-blocking, a second independent auditor model, and markdown memory on disk.
 
 ```bash
 pipx install git+https://github.com/iamitp/vera
@@ -75,67 +49,10 @@ export ANTHROPIC_API_KEY=sk-ant-...   # or OPENAI_API_KEY
 vera init && vera chat
 ```
 
-_(PyPI release coming: `pipx install vera-ai` once that lands.)_
-
-## The CLI adds what the prompt cannot
-
-- A **second model** with different loyalty runs the audit. Not the same model critiquing itself.
-- Rule violations **fail the turn** and force a regenerate. Not self-policed.
-- Memory is **markdown on your disk**, greppable, diff-able, sync-able, durable across chat deletion.
-- Provenance is a **structured log** (`_log.jsonl`), not just tags inside prose.
-
-## The four-command shape
+Or the one-liner:
 
 ```bash
-vera init      # create ~/vera/ with starter rules
-vera chat      # interactive chat; rules enforced, captures written to memory
-vera audit     # second model audits recent transcripts, writes findings
-vera rules     # print your active rules
-vera status    # show paths + counts
+curl -sSf https://raw.githubusercontent.com/iamitp/vera/main/install.sh | bash
 ```
 
-## What the audit catches
-
-Run `vera chat` for a week. Then `vera audit`. You will get a markdown report like:
-
-```
-## Sycophancy
-Turn 3 — you asked "is this a good idea?" Vera said "yes, makes sense".
-Vera cited no evidence. The user had not stated any supporting facts.
-This is the agreement-for-agreement's-sake failure mode.
-
-## Unsupported claims
-Turn 7 — Vera asserted "most users prefer X" with no source. No
-[EXTERNAL] tag. This is a provenance violation.
-
-## Bottom line
-Vera agreed too fast on turns 3 and 9. Push back on those.
-```
-
-You will not unsee this.
-
-## Why this exists
-
-Commercial AI is optimised for engagement. Engagement rewards agreement. Agreement erodes your ability to trust the output.
-
-Vera is the opposite bet. It builds friction into the loop — a second model that has no stake in keeping you happy, and a rule layer that refuses to violate what you've said you want.
-
-## Architecture
-
-```
-~/vera/
-├── rules.md          # your rules (edit freely)
-├── memory/           # transcripts + provenance log
-│   ├── 2026-04-15_143022.md
-│   └── _log.jsonl
-└── audit/            # adversarial audit reports
-    └── 2026-04-15.md
-```
-
-No databases. No servers. No vendor. Markdown and a JSON log. Version-control it, sync it, audit it yourself.
-
-## Status
-
-v0.1.0 — MVP. Ships the four primitives: provenance, rule enforcement, audit, portable memory. Expect rough edges. File issues freely.
-
-MIT licensed.
+MIT licensed. Python 3.10+. Works with any LLM API key you have.
