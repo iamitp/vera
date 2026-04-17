@@ -1,5 +1,9 @@
 # Vera
 
+[![CI](https://github.com/iamitp/vera/actions/workflows/ci.yml/badge.svg)](https://github.com/iamitp/vera/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/vera-ai.svg)](https://pypi.org/project/vera-ai/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 **AI with clerk discipline.**
 
 Reads instructions literally. Verifies names before writing them into documents. Tags claims by confidence so you see guesses on sight. Corrections stick. Silent failures surface. Audits itself on command.
@@ -54,5 +58,16 @@ Or the one-liner:
 ```bash
 curl -sSf https://raw.githubusercontent.com/iamitp/vera/main/install.sh | bash
 ```
+
+```bash
+vera init             # create ~/vera/ with starter rules
+vera chat             # interactive chat; rules enforced, captures written to memory
+vera audit            # second model audits recent transcripts, writes findings
+vera audit --share    # also emits an anonymized, copy-pasteable snippet
+vera rules            # print your active rules
+vera status           # show paths + counts
+```
+
+See what the audit catches in practice: [`examples/`](examples/) — a realistic transcript, the auditor's report, and the `--share` snippet.
 
 MIT licensed. Python 3.10+. Works with any LLM API key you have.

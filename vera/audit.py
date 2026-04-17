@@ -26,6 +26,12 @@ Be specific. Quote the primary's words. If there is nothing to flag, say so
 plainly in one line — do not manufacture findings.
 """.strip()
 
+SHARE_FOOTER = (
+    "\n---\n_Audited by Vera — the AI memory that argues with itself. "
+    "github.com/iamitp/vera_\n"
+)
+
+
 def run_audit(provider: Provider, transcripts_dir: Path) -> Path:
     AUDIT_DIR.mkdir(parents=True, exist_ok=True)
     transcripts = sorted(transcripts_dir.glob("*.md"))[-5:]
@@ -43,3 +49,25 @@ def run_audit(provider: Provider, transcripts_dir: Path) -> Path:
     out = AUDIT_DIR / f"{datetime.now():%Y-%m-%d_%H%M}.md"
     out.write_text(f"# Vera Audit {datetime.now():%Y-%m-%d %H:%M}\n\n{resp}\n")
     return out
+
+
+def build_share_snippet(audit_path: Path) -> tuple[Path, str]:
+    """Produce an anonymized, copy-pasteable snippet from an audit report.
+
+    Strips local paths and timestamps, keeps only the auditor's findings.
+    Writes a sibling `.share.md` file and returns (path, snippet_text).
+    """
+    raw = audit_path.read_text()
+    # Drop the first-line header with the timestamp; keep the body.
+    lines = raw.splitlines()
+    if lines and lines[0].startswith("# Vera Audit"):
+        lines = lines[1:]
+    body = "\n".join(lines).strip()
+    snippet = (
+        "# What Vera caught in my own chat history\n\n"
+        f"{body}\n"
+        f"{SHARE_FOOTER}"
+    )
+    share_path = audit_path.with_suffix(".share.md")
+    share_path.write_text(snippet)
+    return share_path, snippet

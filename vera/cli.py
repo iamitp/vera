@@ -10,7 +10,7 @@ from .config import VERA_HOME, MEMORY_DIR, AUDIT_DIR, RULES_FILE, PROVENANCE_LOG
 from .provenance import SYSTEM_ADDENDUM, log_write
 from .rules import ensure_rules, check_response, DEFAULT_RULES
 from .llm import chat as _llm_chat
-from .audit import run_audit
+from .audit import run_audit, build_share_snippet
 
 console = Console()
 
@@ -169,13 +169,25 @@ def chat():
             f.write(f"## you\n{user_input}\n\n## vera\n{response}\n\n")
 
 @main.command()
-def audit():
+@click.option(
+    "--share",
+    "share_flag",
+    is_flag=True,
+    help="Also emit an anonymized, copy-pasteable snippet suitable for social media.",
+)
+def audit(share_flag: bool):
     """Run the adversarial auditor on recent transcripts."""
     provider = detect_provider()
     out = run_audit(provider, MEMORY_DIR)
     console.print(f"[green]Audit written:[/green] {out}")
     console.print()
     console.print(Markdown(out.read_text()))
+    if share_flag:
+        share_path, snippet = build_share_snippet(out)
+        console.print()
+        console.print(f"[green]Shareable snippet written:[/green] {share_path}")
+        console.print("[dim]Copy below and post wherever. No paths, no timestamps.[/dim]\n")
+        console.print(snippet)
 
 @main.command()
 def rules():
