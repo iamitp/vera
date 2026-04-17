@@ -7,7 +7,8 @@ evaluate the tool without installing or spending API credits.
 - `transcript.md` — a realistic chat transcript Vera would write to `~/vera/memory/`.
 - `audit.md` — what `vera audit` produces when the auditor reads that transcript.
 - `audit.share.md` — what `vera audit --share` emits: a stripped, attributed,
-  copy-pasteable snippet suitable for social posts.
+  copy-pasteable snippet suitable for social posts. Committed as a one-time
+  snapshot; regenerate from `audit.md` if the share-snippet format changes.
 
 The audit here flags three failure modes worth seeing: sycophancy,
 unsupported claims, and provenance gaps.

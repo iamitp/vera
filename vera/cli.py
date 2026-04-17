@@ -187,7 +187,7 @@ def audit(share_flag: bool):
         console.print()
         console.print(f"[green]Shareable snippet written:[/green] {share_path}")
         console.print("[dim]Copy below and post wherever. No paths, no timestamps.[/dim]\n")
-        console.print(snippet)
+        console.print(Markdown(snippet))
 
 @main.command()
 def rules():

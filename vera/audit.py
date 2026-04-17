@@ -3,6 +3,7 @@ a different loyalty — to catch sycophancy, overconfidence, and unverified
 claims the user didn't push back on."""
 from __future__ import annotations
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 from .config import Provider, AUDIT_DIR, PROVENANCE_LOG
@@ -51,18 +52,24 @@ def run_audit(provider: Provider, transcripts_dir: Path) -> Path:
     return out
 
 
+_HOME_PATH = re.compile(r"(?:/Users|/home)/[^\s/]+(/[\w.\-/]*)?")
+_ISO_TIMESTAMP = re.compile(r"\b\d{4}-\d{2}-\d{2}(?:[ _T]\d{2}[:_]?\d{2}(?::?\d{2})?)?\b")
+
+
 def build_share_snippet(audit_path: Path) -> tuple[Path, str]:
     """Produce an anonymized, copy-pasteable snippet from an audit report.
 
-    Strips local paths and timestamps, keeps only the auditor's findings.
+    Drops the timestamped header, scrubs absolute home paths and ISO
+    timestamps from the body, and appends the Vera attribution footer.
     Writes a sibling `.share.md` file and returns (path, snippet_text).
     """
     raw = audit_path.read_text()
-    # Drop the first-line header with the timestamp; keep the body.
     lines = raw.splitlines()
     if lines and lines[0].startswith("# Vera Audit"):
         lines = lines[1:]
     body = "\n".join(lines).strip()
+    body = _HOME_PATH.sub("~/…", body)
+    body = _ISO_TIMESTAMP.sub("[timestamp]", body)
     snippet = (
         "# What Vera caught in my own chat history\n\n"
         f"{body}\n"
