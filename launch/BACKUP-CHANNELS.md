@@ -13,7 +13,7 @@ Post HN first, then cascade these over days 2–7. Don't dump them all at once.
 who actually try tools. Needs an invite; if you don't have one, skip.
 
 - **URL:** https://lobste.rs/stories/new
-- **Title:** `Vera – AI memory that argues with itself (local-first, MIT)`
+- **Title:** `Vera – paste-in prompt that makes any AI tag its guesses (MIT)`
 - **Tags:** `ai`, `python`, `show`
 - **URL field:** `https://github.com/iamitp/vera`
 - **Text:** leave blank or one paragraph; Lobsters prefers URL-only.
@@ -25,65 +25,53 @@ who actually try tools. Needs an invite; if you don't have one, skip.
 Longer-form than HN. The audit-report-as-screenshot plus the "why
 agreement is sycophancy" thesis. Target ~800 words.
 
-**Title:** `I built an AI memory layer that audits itself for sycophancy`
+**Title:** `I built a paste-in prompt that makes any AI tag its guesses`
 
 **Body skeleton (flesh out in your voice):**
 
 ```
-## The problem with "remember more"
+## The problem nobody's solving at the prompt layer
 
-Every AI memory layer I tried - Mem0, Letta, Khoj - was optimising for
-recall. More context, more history, richer retrieval. None of them
-asked the harder question: was the assistant right in the first place?
+Every AI will confidently tell you wrong things. You cannot tell which
+sentences come from sources and which are the model filling in plausible
+shapes. OpenAI rolled back a ChatGPT update for being too sycophantic.
+Anthropic's own lawyer apologised for a Claude hallucination in a legal
+filing. 57% of employees hide their AI use from fear of bad output.
 
-LLMs are trained on engagement, and engagement rewards agreement.
-Agreement erodes your ability to trust the output. Memory that remembers
-a confidently-wrong answer is worse than no memory at all.
+## Three disciplines, one paste
 
-## The four primitives that survived six months of use
+Vera is a system prompt you paste into any AI chat (Claude, ChatGPT,
+Gemini, Grok). No install. No extension. 30 seconds. The model gets
+three disciplines:
 
-I've been running a personal memory stack on top of Claude and GPT for
-about six months. I kept stripping it back. The four pieces that earned
-their keep:
+1. **HONESTY.** Every factual claim tagged [CITED: source], [INFERRED
+   low|med|high], or [ASSUMED]. You see which lines to trust on sight.
+   When unsure: "I'm not sure" instead of guessing with confidence.
 
-1. **Provenance on every write.** OBSERVED / INFERRED / ASSUMED /
-   CANDIDATE. Tagged in the system prompt, enforced in captures. You
-   can't mix "the user said" with "I extrapolated" in the same line.
+2. **ATTENTION.** Reads instructions literally. Corrections stick across
+   the session. Negations stay negated. Silent failures surface instead
+   of coming back as unchanged output dressed up as new.
 
-2. **Rule enforcement, not rule reminder.** Banned phrases fail the turn
-   and the model regenerates. This is a strictly stronger guarantee than
-   putting "please don't say 'great question'" in the system prompt.
+3. **AUDIT.** Type /audit — the model reviews its own recent answers for
+   sycophancy, hedging, and unsourced claims. Quotes itself.
 
-3. **Adversarial audit.** A second model with no loyalty to the first
-   reads your transcripts weekly and calls out where you got
-   agreed-with instead of pushed-back-on. The primary gets no rebuttal.
+## What the audit catches
 
-4. **Markdown on disk.** No database. No server. Your memory is files
-   you own, version-controllable, sync-able, portable.
+[embed the /audit screenshot]
 
-## What `vera audit` catches
+Type /audit after a few turns and the model calls out where it agreed
+too easily, hedged without saying so, or claimed without a source.
 
-[embed the audit screenshot — examples/audit.share.md reformatted]
+## The deeper path
 
-I have never seen a commercial AI memory layer produce a report like
-this. The incentive is backwards: they get paid for engagement, not
-accuracy.
+For power users, a CLI (pipx install vera-ai) adds: a second
+independent model as auditor (not self-critique), hard rule enforcement
+(banned phrases fail the turn, model regenerates), and on-disk markdown
+memory you can grep and sync.
 
-## The tool
+But the paste-in prompt covers 80% of the value. Start there.
 
-Four commands: init, chat, audit, rules.
-
-`pipx install vera-ai`
-
-MIT licensed. BYO API key. github.com/iamitp/vera
-
-## What it is not
-
-- Not a memory vector store. It's markdown files.
-- Not a replacement for Cursor / Aider / etc. It's a thin layer.
-- Not fast. The audit runs a full LLM pass; budget a minute per week.
-
-The value is not retrieval. The value is the audit.
+github.com/iamitp/vera — MIT licensed.
 ```
 
 Post to dev.to, cross-post to Medium if you use it, and add a canonical
@@ -97,25 +85,23 @@ Different audience — enterprise / product folks, not engineers. Lead
 with the sycophancy angle, not the technical primitives.
 
 ```
-I built a small open-source tool for myself and ended up shipping it.
+Every AI will confidently tell you wrong things. You can't see which
+lines are sourced and which are guesses. I built a solution at the
+prompt layer.
 
-The problem: every AI memory layer I tried was trying to remember more
-for me. None of them asked whether the AI was right in the first place.
+Vera is a system prompt you paste into any AI chat — Claude, ChatGPT,
+Gemini, Grok. No install. 30 seconds. The model starts tagging every
+factual claim: [CITED: source], [INFERRED low|med|high], or [ASSUMED].
 
-LLMs are trained on engagement. Engagement rewards agreement. Agreement
-erodes your ability to trust the output.
+You see which lines to trust at a glance.
 
-Vera is the opposite bet. A second model with no stake in keeping you
-happy reads your transcripts and calls out sycophancy. Your rules block
-the model when it breaks them, instead of just reminding it. Every
-memory write carries a provenance tag — what was observed vs. inferred
-vs. assumed — so you can never mix them up again.
+Type /audit and it self-critiques for sycophancy and unsourced claims.
 
-Local markdown. Bring your own API key. MIT.
+Why: OpenAI rolled back a sycophantic ChatGPT update. Anthropic's
+lawyer apologised for a Claude hallucination. 57% of employees hide
+AI use from fear of bad output. The problem is real.
 
-Happy to hear what breaks.
-
-🔗 github.com/iamitp/vera
+MIT. Works in any AI chat. github.com/iamitp/vera
 ```
 
 (Emoji optional. LinkedIn allows them; remove for the HN/dev.to

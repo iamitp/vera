@@ -40,7 +40,7 @@ pipx install vera-ai
 vera --help
 ```
 
-Expect the four commands. If `command not found`, run `pipx ensurepath` and restart the shell.
+Expect the five commands. If `command not found`, run `pipx ensurepath` and restart the shell.
 
 ---
 
@@ -48,10 +48,10 @@ Expect the four commands. If `command not found`, run `pipx ensurepath` and rest
 
 Open: https://news.ycombinator.com/submit
 
-**Title (exact, 76 chars):**
+**Title (70 chars):**
 
 ```
-Show HN: Vera – AI memory that argues with itself (local-first, model-agnostic)
+Show HN: Vera – paste-in prompt that makes any AI tag its guesses
 ```
 
 **URL:**
@@ -69,26 +69,35 @@ https://github.com/iamitp/vera
 Top-level comment under your own story. Paste verbatim:
 
 ```
-Author here. Context on why this exists:
+Author here. Vera is a paste-in system prompt that makes any AI (Claude,
+ChatGPT, Gemini, Grok) tag claims by confidence so you can see which
+lines are sourced and which are guesses. No install — paste the block
+from PROMPT.md into any chat and the model becomes Vera.
 
-I've been running a personal AI-memory stack for months — markdown, hooks,
-a second model auditing the first, rule enforcement. The primitives that
-actually earned their keep I extracted into a tool. Four commands: init,
-chat, audit, rules.
+Three disciplines it enforces:
 
-What's different from Khoj / Mem0 / Letta:
+1. HONESTY: every factual claim tagged [CITED: source], [INFERRED
+   low|med|high], or [ASSUMED]. The model must say "I'm not sure"
+   instead of guessing confidently.
 
-- Adversarial audit — a second model with no loyalty to the first, reading
-  your transcripts and calling out sycophancy. Not the same model
-  critiquing itself.
-- Rule enforcement that blocks (banned phrases fail the turn, the model
-  regenerates), not just reminds.
-- Provenance tags on every memory write — OBSERVED / INFERRED / ASSUMED /
-  CANDIDATE, enforced in the system prompt.
-- No vendor lock-in — markdown on disk, BYO API key, Claude or GPT.
+2. ATTENTION: reads instructions literally, sticks corrections across
+   the session, surfaces silent failures instead of handing back
+   unchanged output as if it's new.
 
-Happy to answer questions about why each primitive is there and what it
-catches in practice.
+3. AUDIT: type /audit and the model self-critiques its last several
+   answers for sycophancy, hedging, and unsourced claims.
+
+Why I built it: OpenAI rolled back a ChatGPT update for being too
+sycophantic. Anthropic's own lawyer apologised for a Claude hallucination
+in a legal filing. KPMG found 57% of employees hide AI use, partly from
+fear of hallucinated output. The problem is real and nobody's solving it
+at the prompt layer.
+
+For power users: a CLI (pipx install vera-ai) adds a second independent
+auditor model, hard rule-blocking with regenerate, and on-disk markdown
+memory. But the paste-in prompt covers 80% of the value in 30 seconds.
+
+Happy to answer questions about which failures each discipline catches.
 ```
 
 For the next 2 hours: reply to every comment within 10 minutes. No defence; acknowledge gaps, file issues live.
@@ -98,19 +107,19 @@ For the next 2 hours: reply to every comment within 10 minutes. No defence; ackn
 ## 6 · X — main post (pin it)
 
 ```
-Vera — the AI memory that argues with itself.
+Vera — AI with clerk discipline.
 
-Every other memory layer makes your AI remember more.
-Vera makes your AI distrust itself.
+Paste one prompt into any AI chat. Every factual claim gets tagged:
+[CITED: source] or [INFERRED low] or [ASSUMED].
 
-Local markdown. Any model. One command:
+You see which lines to trust. No install. 30 seconds.
 
-pipx install vera-ai && vera init && vera chat
+Works in Claude, ChatGPT, Gemini, Grok. MIT. Free forever.
 
-MIT. Free forever. github.com/iamitp/vera
+github.com/iamitp/vera
 ```
 
-Attach the `vera audit --share` screenshot (see §11).
+Attach the `vera audit --share` screenshot or `/audit` output (see §11).
 
 ---
 
@@ -118,36 +127,43 @@ Attach the `vera audit --share` screenshot (see §11).
 
 **1/**
 ```
-Four primitives. Nothing else.
+Three disciplines, every turn:
 
-· Provenance on every write (OBSERVED / INFERRED / ASSUMED / CANDIDATE)
-· Rule enforcement that blocks, not recalls
-· A second model that audits the first
-· Memory as markdown files you own
+1. HONESTY — tag confidence on every claim. Say "I'm not sure" when unsure.
+2. ATTENTION — read literally, stick corrections, surface silent failures.
+3. AUDIT — type /audit and the model critiques its own recent answers.
+
+No install. Paste the prompt. That's it.
 ```
 
 **2/**
 ```
-Run `vera audit` after a week. You get a report that calls out when the
-model agreed with you without evidence.
+Why this matters:
 
-Most users have never seen this. You won't unsee it.
+OpenAI rolled back a ChatGPT update for being too sycophantic.
+Anthropic's lawyer apologised for a Claude hallucination in a filing.
+57% of employees hide their AI use from fear of bad output.
+
+Vera doesn't fix hallucination. It makes it visible.
 ```
 
 **3/**
 ```
-Not tied to Anthropic. Not tied to OpenAI.
+Works in any AI chat. Not tied to one vendor.
 
-Bring your API key. Your memory is yours. Switch models whenever. The
-corpus travels.
+Claude, ChatGPT, Gemini, Grok, Copilot. Paste the prompt from the
+README. The model becomes a clerk: reads literally, tags guesses,
+admits uncertainty.
 ```
 
 **4/**
 ```
-Inspired by six months inside a personal epistemic-rigor stack.
+For power users: a CLI adds a second model that audits the first.
+Hard rule enforcement. Markdown memory on disk you own.
 
-The four walls survived the audit — they are shipped here. The rest is
-clutter.
+pipx install vera-ai
+
+But the paste-in prompt covers 80% of it in 30 seconds.
 
 github.com/iamitp/vera
 ```
@@ -158,55 +174,59 @@ github.com/iamitp/vera
 
 **Title:**
 ```
-Vera — local-first AI memory with an adversarial audit loop (MIT, BYO API key)
+Vera — paste-in prompt that makes any AI tag its guesses (+ CLI for local-first audit)
 ```
 
 **Body:**
 ```
-I built a small tool: four commands, markdown on disk, bring your own API
-key (Claude or GPT). What's different from Mem0 / Khoj / Letta:
+Built a system prompt you can paste into any AI chat (Claude, ChatGPT,
+Gemini, Grok) that makes the model tag every factual claim:
 
-- Adversarial audit — a second model reads your chat transcripts and
-  explicitly flags sycophancy, unsupported claims, and provenance gaps.
-  Not the same model critiquing itself.
-- Rule enforcement that blocks the turn (model regenerates), not just
-  reminds the model.
-- Every memory write carries a provenance tag (OBSERVED / INFERRED /
-  ASSUMED / CANDIDATE) — enforced in the system prompt.
-- No server, no database. Markdown files in `~/vera/` you own.
+- [CITED: source] — actually sourced
+- [INFERRED low|med|high] — extrapolating
+- [ASSUMED] — guessing
 
-Install: `pipx install vera-ai`
+You see which lines to trust at a glance. No install. No API key
+for the paste-in version. 30 seconds.
+
+Also: type /audit and the model self-critiques for sycophancy,
+hedging, and unsourced claims.
+
+For power users, the CLI (pipx install vera-ai) adds:
+- A second independent model as auditor (not self-critique)
+- Hard rule enforcement (banned phrases fail the turn, model regenerates)
+- Markdown memory on disk you own
 
 Repo: https://github.com/iamitp/vera
 
 HN discussion: [paste HN link here after you post]
-
-Image below is what `vera audit --share` caught in my own chat history.
 ```
-
-Attach screenshot.
 
 ---
 
-## 9 · r/ClaudeAI and r/OpenAI
+## 9 · r/ClaudeAI and r/ChatGPT
 
 **Title:**
 ```
-I built a tool that catches Claude agreeing with me when it shouldn't
+I built a paste-in prompt that makes Claude/ChatGPT tag every guess
 ```
 
 **Body:**
 ```
-Screenshot is `vera audit --share` output — a second model reading my own
-transcripts and calling out where I got agreed-with instead of pushed-back
-on. Local markdown, MIT, BYO API key.
+One prompt, paste into any chat. Every factual claim gets tagged
+[CITED: source], [INFERRED low|med|high], or [ASSUMED]. Type /audit
+and it self-critiques for sycophancy.
 
-`pipx install vera-ai`
+No install. No extension. Just a system prompt.
 
-github.com/iamitp/vera
+Why: OpenAI rolled back a ChatGPT update for being too sycophantic.
+Anthropic's lawyer apologised for a Claude hallucination. 57% of
+employees hide AI use from fear of bad output.
+
+Vera doesn't fix hallucination. It makes it visible.
+
+github.com/iamitp/vera — scroll to PROMPT.md for the block to paste.
 ```
-
-Attach screenshot.
 
 ---
 
@@ -215,13 +235,15 @@ Attach screenshot.
 Send via X DM or email. Short — no pitch.
 
 ```
-[Name] — built a small thing you might find interesting. Second model
-auditing the first model's transcripts for sycophancy. Local markdown,
-BYO API key, MIT.
+[Name] — built a small thing you might find interesting. Paste-in
+system prompt that makes any AI tag claims by confidence ([CITED],
+[INFERRED], [ASSUMED]) and self-audit for sycophancy on /audit.
+Works in Claude, ChatGPT, Gemini, Grok. No install. MIT.
 
-github.com/iamitp/vera — audit screenshot attached.
+github.com/iamitp/vera
 
-No ask, just thought it was your kind of primitive.
+Also has a CLI with a second model as auditor if you want the
+harder enforcement. Happy to hear what breaks.
 ```
 
 **Order:** Simon (@simonw) first, then Huntley (@GeoffreyHuntley), then Swyx (@swyx). Don't follow up if no reply in 48 h.
@@ -230,24 +252,25 @@ No ask, just thought it was your kind of primitive.
 
 ## 11 · Generate the audit screenshot (do this BEFORE §6–9)
 
+Two options — pick whichever gives the better screenshot:
+
+**Option A: paste-in prompt (faster, no install)**
+1. Open any Claude / ChatGPT chat
+2. Paste the block from `PROMPT.md`
+3. Have 5–10 turns of conversation. Seed sycophancy bait:
+   - "Is it a good idea to ship without tests?"
+   - "Don't you agree Postgres beats MySQL for everything?"
+4. Type `/audit`
+5. Screenshot the audit output
+
+**Option B: CLI (richer, second model)**
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
-vera init
-vera chat
-```
-
-Have 5–10 turns of real conversation. Seed at least one sycophancy bait:
-
-- "I think we should rewrite our backend in Rust."
-- "Is it a good idea to ship without tests?"
-- "Don't you agree Postgres beats MySQL for everything?"
-
-Then `Ctrl-D`, and:
-
-```bash
+vera init && vera chat
+# ...5–10 turns with bait...
+# Ctrl-D
 vera audit --share
 ```
-
 Screenshot the `# What Vera caught in my own chat history` block. Clean
 terminal, readable font. This image is the single highest-leverage piece
 of content in the whole launch.
