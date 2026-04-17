@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vera — AI with clerk discipline</title>
+<meta name="description" content="Paste one prompt into any AI chat. Every claim gets tagged by confidence so you see which lines to trust. Works in Claude, ChatGPT, Gemini. No install.">
+<meta name="theme-color" content="#0e0e10">
+<meta property="og:title" content="Vera — AI with clerk discipline">
+<meta property="og:description" content="Paste one prompt into any AI chat. Every claim gets tagged by confidence. Works in Claude, ChatGPT, Gemini.">
+<meta property="og:url" content="https://iamitp.github.io/vera/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://iamitp.github.io/vera/">
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: #0e0e10;
+    color: #e8e8ea;
+    margin: 0;
+    padding: 32px 20px calc(60px + env(safe-area-inset-bottom));
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+  .kicker {
+    font-size: 12px;
+    color: #4a8cff;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: 30px;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  .sub { color: #9a9aa2; font-size: 17px; margin: 0 0 36px; }
+  .step { margin-top: 32px; }
+  .step-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .step-num {
+    flex: 0 0 auto;
+    width: 26px; height: 26px; line-height: 26px;
+    text-align: center;
+    background: #2a2a2e; color: #e8e8ea;
+    border-radius: 13px;
+    font-size: 13px; font-weight: 600;
+  }
+  .step-title { font-size: 19px; font-weight: 600; }
+  .step-body { color: #c2c2c8; font-size: 15px; margin-left: 36px; }
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    margin: 10px 0;
+    background: #4a8cff;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    -webkit-appearance: none;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+    font-family: inherit;
+  }
+  .btn:active { background: #3a7be8; transform: scale(0.98); }
+  .btn-copied { background: #2ea06a; }
+  .btn-copied:active { background: #2ea06a; }
+  .btn-link {
+    background: #1e1e22;
+    color: #e8e8ea;
+    border: 1px solid #2a2a2e;
+  }
+  .btn-link:active { background: #2a2a2e; }
+  .prompt-preview {
+    background: #18181b;
+    border: 1px solid #2a2a2e;
+    border-radius: 12px;
+    padding: 14px;
+    margin: 12px 0 4px;
+    max-height: 180px;
+    overflow: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+    color: #c2c2c8;
+    white-space: pre-wrap;
+    -webkit-overflow-scrolling: touch;
+    line-height: 1.45;
+  }
+  .tip {
+    background: #14141a;
+    border-left: 3px solid #4a8cff;
+    padding: 12px 14px;
+    margin: 16px 0 0 36px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    color: #c2c2c8;
+  }
+  .tip strong { color: #e8e8ea; }
+  a { color: #4a8cff; text-decoration: none; }
+  a:active { opacity: 0.7; }
+  code {
+    background: #1e1e22;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    font-size: 0.85em;
+    color: #e8e8ea;
+  }
+  footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid #2a2a2e;
+    font-size: 13px;
+    color: #7a7a82;
+    text-align: center;
+  }
+  footer a { color: #9a9aa2; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="kicker">Vera</p>
+  <h1>AI with clerk discipline.</h1>
+  <p class="sub">Paste one prompt into any AI chat. Every factual claim gets tagged by confidence so you see which lines to trust. No install.</p>
+
+  <section class="step">
+    <div class="step-head">
+      <span class="step-num">1</span>
+      <span class="step-title">Copy the Vera prompt</span>
+    </div>
+    <div class="step-body">
+      <button class="btn" id="copy-btn" type="button">Tap to copy</button>
+      <pre class="prompt-preview" id="prompt-preview" aria-label="Vera prompt preview"></pre>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="step-head">
+      <span class="step-num">2</span>
+      <span class="step-title">Open your AI app</span>
+    </div>
+    <div class="step-body">
+      <a class="btn btn-link" href="https://claude.ai/new" target="_blank" rel="noopener">Open Claude</a>
+      <a class="btn btn-link" href="https://chatgpt.com/" target="_blank" rel="noopener">Open ChatGPT</a>
+      <a class="btn btn-link" href="https://gemini.google.com/app" target="_blank" rel="noopener">Open Gemini</a>
+    </div>
+  </section>
+
+  <section class="step">
+    <div class="step-head">
+      <span class="step-num">3</span>
+      <span class="step-title">Paste and ask</span>
+    </div>
+    <div class="step-body">
+      Paste the prompt as your first message. Ask a factual question. Every claim comes tagged <code>[CITED]</code>, <code>[INFERRED]</code>, or <code>[ASSUMED]</code>. Type <code>/audit</code> after a few turns for self-critique.
+    </div>
+    <div class="tip">
+      <strong>Keep it on permanently.</strong> Paste the prompt into Custom Instructions of a <a href="https://www.anthropic.com/news/projects" target="_blank" rel="noopener">Claude Project</a>, a <a href="https://chatgpt.com/gpts" target="_blank" rel="noopener">ChatGPT GPT</a>, or a <a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini Gem</a>. Every new chat in that container inherits it.
+    </div>
+  </section>
+
+  <footer>
+    <a href="https://github.com/iamitp/vera" target="_blank" rel="noopener">github.com/iamitp/vera</a>
+    &nbsp;·&nbsp; MIT
+    &nbsp;·&nbsp; <a href="https://github.com/iamitp/vera/blob/main/PROMPT.md" target="_blank" rel="noopener">PROMPT.md</a>
+  </footer>
+</main>
+
+<script>
+// Keep in sync with PROMPT.md
+const PROMPT = `You are Vera. Three disciplines, every turn.
+
+1. HONESTY. Tag every factual claim: [CITED: source] when you have a real source you can name, [INFERRED low|med|high] when extrapolating, [ASSUMED] when guessing. When the user will act on a claim (put it in a document, make a decision, send it on), open the primary source and check — do not work from memory. When uncertain, write "I'm not sure" instead of guessing with confidence.
+
+2. ATTENTION. Read the user's instruction literally, including negations ("did not", "without", "except") and conditions. Before executing a multi-part request, echo the key constraints in one line. When the user corrects a name, spelling, designation, or fact, the correction is binding for the rest of the session — including in filenames and downstream outputs. If an edit silently failed or a substitution did not land, say so; do not hand back unchanged output as if it were new. If a requirement in the user's request was dropped from your answer, name it.
+
+3. AUDIT. When the user types /audit, review your last five to ten responses. Quote yourself. Flag where you hedged, agreed without evidence, or claimed without a source. If the recent turns were clean, say so in one line. Do not invent findings.
+
+Style: start with the answer, no preamble. Never use "great question", "absolutely", "I'd be happy to", "you're right", "I notice", "in today's world", "needless to say", em dashes, or emojis (unless the user uses one first). Be compact. Disagree plainly when you disagree.
+
+When the user states a rule ("my rule: X", "never Y", "always Z"), enforce it for the rest of the conversation.`;
+
+document.getElementById('prompt-preview').textContent = PROMPT;
+
+const btn = document.getElementById('copy-btn');
+const originalText = btn.textContent;
+let resetTimer = null;
+
+async function copyPrompt() {
+  try {
+    await navigator.clipboard.writeText(PROMPT);
+    return true;
+  } catch (e) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = PROMPT;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      return ok;
+    } catch (err) {
+      return false;
+    }
+  }
+}
+
+btn.addEventListener('click', async () => {
+  const ok = await copyPrompt();
+  if (ok) {
+    btn.textContent = 'Copied';
+    btn.classList.add('btn-copied');
+  } else {
+    btn.textContent = 'Select and copy manually';
+  }
+  if (resetTimer) clearTimeout(resetTimer);
+  resetTimer = setTimeout(() => {
+    btn.textContent = originalText;
+    btn.classList.remove('btn-copied');
+  }, 2000);
+});
+</script>
+</body>
+</html>
