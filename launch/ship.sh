@@ -17,7 +17,12 @@ ok "Tools present"
 
 bold ""
 bold "Step 1/6 — Build dist/"
-python3 -m pip install --user --quiet --upgrade build twine >/dev/null
+# --user is rejected inside a venv; only pass it outside one.
+pip_user_flag="--user"
+if [[ -n "${VIRTUAL_ENV:-}" ]] || python3 -c "import sys; sys.exit(0 if sys.prefix != sys.base_prefix else 1)"; then
+    pip_user_flag=""
+fi
+python3 -m pip install $pip_user_flag --quiet --upgrade build twine >/dev/null
 rm -rf dist build ./*.egg-info
 python3 -m build
 python3 -m twine check dist/*

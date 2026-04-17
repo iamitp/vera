@@ -12,6 +12,7 @@
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href="https://iamitp.github.io/vera/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Crect%20width%3D'64'%20height%3D'64'%20rx%3D'14'%20fill%3D'%230e0e10'%2F%3E%3Ctext%20x%3D'50%25'%20y%3D'54%25'%20text-anchor%3D'middle'%20dominant-baseline%3D'middle'%20font-family%3D'-apple-system%2CSF%20Pro%20Text%2Csystem-ui%2Csans-serif'%20font-weight%3D'700'%20font-size%3D'38'%20fill%3D'%234a8cff'%3EV%3C%2Ftext%3E%3C%2Fsvg%3E">
 <style>
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -130,6 +131,13 @@
     text-align: center;
   }
   footer a { color: #9a9aa2; }
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0);
+    white-space: nowrap; border: 0;
+  }
 </style>
 </head>
 <body>
@@ -144,7 +152,8 @@
       <span class="step-title">Copy the Vera prompt</span>
     </div>
     <div class="step-body">
-      <button class="btn" id="copy-btn" type="button">Tap to copy</button>
+      <button class="btn" id="copy-btn" type="button" aria-describedby="copy-status">Tap to copy</button>
+      <span id="copy-status" role="status" aria-live="polite" class="sr-only"></span>
       <pre class="prompt-preview" id="prompt-preview" aria-label="Vera prompt preview"></pre>
     </div>
   </section>
@@ -155,9 +164,9 @@
       <span class="step-title">Open your AI app</span>
     </div>
     <div class="step-body">
-      <a class="btn btn-link" href="https://claude.ai/new" target="_blank" rel="noopener">Open Claude</a>
-      <a class="btn btn-link" href="https://chatgpt.com/" target="_blank" rel="noopener">Open ChatGPT</a>
-      <a class="btn btn-link" href="https://gemini.google.com/app" target="_blank" rel="noopener">Open Gemini</a>
+      <a class="btn btn-link" href="https://claude.ai/new" target="_blank" rel="noopener noreferrer">Open Claude</a>
+      <a class="btn btn-link" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT</a>
+      <a class="btn btn-link" href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer">Open Gemini</a>
     </div>
   </section>
 
@@ -170,14 +179,14 @@
       Paste the prompt as your first message. Ask a factual question. Every claim comes tagged <code>[CITED]</code>, <code>[INFERRED]</code>, or <code>[ASSUMED]</code>. Type <code>/audit</code> after a few turns for self-critique.
     </div>
     <div class="tip">
-      <strong>Keep it on permanently.</strong> Paste the prompt into Custom Instructions of a <a href="https://www.anthropic.com/news/projects" target="_blank" rel="noopener">Claude Project</a>, a <a href="https://chatgpt.com/gpts" target="_blank" rel="noopener">ChatGPT GPT</a>, or a <a href="https://gemini.google.com" target="_blank" rel="noopener">Gemini Gem</a>. Every new chat in that container inherits it.
+      <strong>Keep it on permanently.</strong> Paste the prompt into Custom Instructions of a <a href="https://www.anthropic.com/news/projects" target="_blank" rel="noopener noreferrer">Claude Project</a>, a <a href="https://chatgpt.com/gpts" target="_blank" rel="noopener noreferrer">ChatGPT GPT</a>, or a <a href="https://gemini.google.com" target="_blank" rel="noopener noreferrer">Gemini Gem</a>. Every new chat in that container inherits it.
     </div>
   </section>
 
   <footer>
-    <a href="https://github.com/iamitp/vera" target="_blank" rel="noopener">github.com/iamitp/vera</a>
+    <a href="https://github.com/iamitp/vera" target="_blank" rel="noopener noreferrer">github.com/iamitp/vera</a>
     &nbsp;·&nbsp; MIT
-    &nbsp;·&nbsp; <a href="https://github.com/iamitp/vera/blob/main/PROMPT.md" target="_blank" rel="noopener">PROMPT.md</a>
+    &nbsp;·&nbsp; <a href="https://github.com/iamitp/vera/blob/main/PROMPT.md" target="_blank" rel="noopener noreferrer">PROMPT.md</a>
   </footer>
 </main>
 
@@ -198,6 +207,7 @@ When the user states a rule ("my rule: X", "never Y", "always Z"), enforce it fo
 document.getElementById('prompt-preview').textContent = PROMPT;
 
 const btn = document.getElementById('copy-btn');
+const status = document.getElementById('copy-status');
 const originalText = btn.textContent;
 let resetTimer = null;
 
@@ -228,13 +238,16 @@ btn.addEventListener('click', async () => {
   if (ok) {
     btn.textContent = 'Copied';
     btn.classList.add('btn-copied');
+    status.textContent = 'Prompt copied to clipboard.';
   } else {
     btn.textContent = 'Select and copy manually';
+    status.textContent = 'Copy failed. Select the prompt text manually and copy.';
   }
   if (resetTimer) clearTimeout(resetTimer);
   resetTimer = setTimeout(() => {
     btn.textContent = originalText;
     btn.classList.remove('btn-copied');
+    status.textContent = '';
   }, 2000);
 });
 </script>

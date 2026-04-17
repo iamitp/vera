@@ -6,7 +6,18 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  prompt-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: docs/index.html embeds current PROMPT.md
+        run: python3 .github/scripts/check_prompt_sync.py
+
   test:
     runs-on: ubuntu-latest
     strategy:
