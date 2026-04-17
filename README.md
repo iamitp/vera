@@ -14,6 +14,18 @@ Works in Claude, ChatGPT, Gemini, any AI chat. No install to try.
 
 ---
 
+## What a real audit looks like
+
+One run on a payments-service conversation [(full artifacts)](examples/live-demo/):
+
+> **What the user didn't push back on but should have**
+>
+> The user said *"400ms of the p99 is JSON serialisation of a 50 kB payload"* and neither party questioned how unusual that number is. 400 ms to serialize 50 kB of JSON in Python stdlib is extremely slow — suspiciously so. That's roughly 0.1 MB/s serialization throughput. Even stdlib `json` should handle 50 kB in single-digit milliseconds on modern hardware. Vera should have flagged it as implausible. This could indicate a measurement error, repeated serialization, or a much larger effective payload.
+
+The first model didn't catch the implausible number. The auditor caught it, worked out the implied throughput, and pointed at three plausible root causes. That's the point — a second pass, different loyalty.
+
+---
+
 ## What changes
 
 Ask a regular AI a hard factual question: one paragraph of smooth prose, every claim evenly confident. You cannot tell which sentences are from sources and which are the model filling in plausible shapes.
@@ -68,6 +80,6 @@ vera rules            # print your active rules
 vera status           # show paths + counts
 ```
 
-See what the audit catches in practice: [`examples/`](examples/) — a realistic transcript, the auditor's report, and the `--share` snippet.
+See what the audit catches in practice: [`examples/`](examples/) (didactic) or [`examples/live-demo/`](examples/live-demo/) (a real run against the Anthropic API, with a genuine methodological catch).
 
 MIT licensed. Python 3.10+. Works with any LLM API key you have.
