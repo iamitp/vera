@@ -254,7 +254,16 @@ of content in the whole launch.
 
 ---
 
-## 12 · Daily tracking (5 min / day for 7 days)
+## 12 · Backup + long-tail channels
+
+If HN misses, or on day 2–7 as amplifiers: see `launch/BACKUP-CHANNELS.md`
+for Lobsters, dev.to, LinkedIn, Mastodon/Bluesky, newsletter pitches
+(TLDR AI / Pointer / Hacker Newsletter / Ben's Bites), a 90-second
+demo-video script, and podcast targets.
+
+---
+
+## 13 · Daily tracking (5 min / day for 7 days)
 
 Bookmark and open these daily; paste the numbers in a text file:
 
