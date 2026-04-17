@@ -68,6 +68,6 @@ vera rules            # print your active rules
 vera status           # show paths + counts
 ```
 
-See what the audit actually catches: [`examples/`](examples/)
+See what the audit catches in practice: [`examples/`](examples/) — a realistic transcript, the auditor's report, and the `--share` snippet.
 
 MIT licensed. Python 3.10+. Works with any LLM API key you have.
