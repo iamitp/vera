@@ -10,7 +10,7 @@ Reads instructions literally. Verifies names before writing them into documents.
 
 Works in Claude, ChatGPT, Gemini, any AI chat. No install to try.
 
-[**Try it in 30 seconds →**](PROMPT.md)  ·  [**On your phone →**](https://iamitp.github.io/vera/)
+[**Try it in 30 seconds →**](PROMPT.md)  ·  [**On your phone →**](https://iamitp.github.io/vera/)  ·  [**See the design wireframes →**](https://iamitp.github.io/vera/wireframes.html)
 
 ---
 
