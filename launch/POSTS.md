@@ -29,14 +29,14 @@ python3 -m twine upload dist/*
 # password: paste the pypi-... token (invisible as you paste — normal)
 ```
 
-Verify: https://pypi.org/project/vera-ai/
+Verify: https://pypi.org/project/vera-clerk/
 
 ---
 
 ## 3 · PyPI — smoke test (fresh shell)
 
 ```bash
-pipx install vera-ai
+pipx install vera-clerk
 vera --help
 ```
 
@@ -93,7 +93,7 @@ in a legal filing. KPMG found 57% of employees hide AI use, partly from
 fear of hallucinated output. The problem is real and nobody's solving it
 at the prompt layer.
 
-For power users: a CLI (pipx install vera-ai) adds a second independent
+For power users: a CLI (pipx install vera-clerk) adds a second independent
 auditor model, hard rule-blocking with regenerate, and on-disk markdown
 memory. But the paste-in prompt covers 80% of the value in 30 seconds.
 
@@ -161,7 +161,7 @@ admits uncertainty.
 For power users: a CLI adds a second model that audits the first.
 Hard rule enforcement. Markdown memory on disk you own.
 
-pipx install vera-ai
+pipx install vera-clerk
 
 But the paste-in prompt covers 80% of it in 30 seconds.
 
@@ -192,7 +192,7 @@ for the paste-in version. 30 seconds.
 Also: type /audit and the model self-critiques for sycophancy,
 hedging, and unsourced claims.
 
-For power users, the CLI (pipx install vera-ai) adds:
+For power users, the CLI (pipx install vera-clerk) adds:
 - A second independent model as auditor (not self-critique)
 - Hard rule enforcement (banned phrases fail the turn, model regenerates)
 - Markdown memory on disk you own
@@ -291,7 +291,7 @@ demo-video script, and podcast targets.
 Bookmark and open these daily; paste the numbers in a text file:
 
 - https://github.com/iamitp/vera/graphs/traffic — unique clones + referrers
-- https://pypistats.org/packages/vera-ai — install counts (~24 h lag)
+- https://pypistats.org/packages/vera-clerk — install counts (~24 h lag)
 - https://github.com/iamitp/vera/stargazers
 - https://news.ycombinator.com/from?site=github.com/iamitp — future HN threads
 
