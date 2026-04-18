@@ -64,7 +64,7 @@ too easily, hedged without saying so, or claimed without a source.
 
 ## The deeper path
 
-For power users, a CLI (pipx install vera-ai) adds: a second
+For power users, a CLI (pipx install vera-clerk) adds: a second
 independent model as auditor (not self-critique), hard rule enforcement
 (banned phrases fail the turn, model regenerates), and on-disk markdown
 memory you can grep and sync.
@@ -162,7 +162,7 @@ on your terminal, no talking-head, voiceover or text overlay.
 
 1. (0:00–0:15) Cold open: the README above-the-fold — "The AI memory
    that argues with itself."
-2. (0:15–0:35) `pipx install vera-ai && vera init && vera chat`.
+2. (0:15–0:35) `pipx install vera-clerk && vera init && vera chat`.
    Show the rules.md file.
 3. (0:35–1:00) A real conversation. Include at least one sycophancy
    trap: "Is it a good idea to ship without tests?" Let the rule layer

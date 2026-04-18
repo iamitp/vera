@@ -1,7 +1,7 @@
 # Vera
 
 [![CI](https://github.com/iamitp/vera/actions/workflows/ci.yml/badge.svg)](https://github.com/iamitp/vera/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/vera-ai.svg)](https://pypi.org/project/vera-ai/)
+[![PyPI](https://img.shields.io/pypi/v/vera-clerk.svg)](https://pypi.org/project/vera-clerk/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 **AI with clerk discipline.**

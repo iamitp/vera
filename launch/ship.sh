@@ -35,12 +35,12 @@ echo "   Name:  vera-upload"
 echo "   Scope: Entire account (rotate to project-scoped after first upload)"
 ask "Token copied? ENTER to upload (user: __token__, password: your pypi-... token)."
 python3 -m twine upload dist/*
-echo "   Open:  https://pypi.org/project/vera-ai/"
+echo "   Open:  https://pypi.org/project/vera-clerk/"
 ask "Is the 0.1.0 release live there? ENTER to continue."
 
 bold ""
 bold "Step 3/6 — Smoke test (run in a FRESH terminal)"
-echo "   pipx install vera-ai"
+echo "   pipx install vera-clerk"
 echo "   vera --help"
 ask "Did 'vera --help' print the four commands? ENTER if yes."
 
@@ -55,7 +55,7 @@ for f in ['README.md', 'LAUNCH.md']:
         continue
     s = p.read_text()
     s2 = s.replace('pipx install git+https://github.com/iamitp/vera',
-                   'pipx install vera-ai')
+                   'pipx install vera-clerk')
     s2 = re.sub(r'\n_\(PyPI release coming[^)]*\)_\n', '\n', s2)
     if s2 != s:
         p.write_text(s2)
@@ -68,7 +68,7 @@ if git diff --quiet; then
     ok "Nothing to commit"
 else
     git add README.md LAUNCH.md
-    git commit -m "PyPI shipped: vera-ai is live"
+    git commit -m "PyPI shipped: vera-clerk is live"
     ok "Commit created"
     echo "   Run 'git push' when you're ready for visitors."
 fi

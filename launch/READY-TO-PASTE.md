@@ -185,7 +185,7 @@ Order: Simon (@simonw) first, then Huntley (@GeoffreyHuntley), then Swyx (@swyx)
 
 - https://github.com/iamitp/vera/graphs/traffic
 - https://github.com/iamitp/vera/stargazers
-- https://pypistats.org/packages/vera-ai (once PyPI is live)
+- https://pypistats.org/packages/vera-clerk (once PyPI is live)
 - https://news.ycombinator.com/from?site=github.com/iamitp
 
 Paste the daily numbers into a text file. After 7 days the referrer list tells you which channel earned its keep.

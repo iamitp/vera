@@ -1,5 +1,5 @@
 [project]
-name = "vera-ai"
+name = "vera-clerk"
 version = "0.1.0"
 description = "The AI memory that argues with itself. Local-first. Model-agnostic. Every answer with a receipt."
 readme = "README.md"
