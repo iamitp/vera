@@ -8,6 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from .config import Provider, AUDIT_DIR, PROVENANCE_LOG
 from .llm import chat
+from .provenance import log_usage
 
 AUDITOR_SYSTEM = """
 You are Vera's auditor. Your only loyalty is to calling out the primary
@@ -41,12 +42,13 @@ def run_audit(provider: Provider, transcripts_dir: Path) -> Path:
         out.write_text(f"# Vera Audit {datetime.now():%Y-%m-%d}\n\nNo transcripts to audit.\n")
         return out
     body = "\n\n---\n\n".join(t.read_text() for t in transcripts)
-    resp = chat(
+    resp, usage = chat(
         provider,
         AUDITOR_SYSTEM,
         [{"role": "user", "content": f"Audit these transcripts:\n\n{body}"}],
         model=provider.audit_model,
     )
+    log_usage(usage, source="audit", log_path=PROVENANCE_LOG)
     out = AUDIT_DIR / f"{datetime.now():%Y-%m-%d_%H%M}.md"
     out.write_text(f"# Vera Audit {datetime.now():%Y-%m-%d %H:%M}\n\n{resp}\n")
     return out

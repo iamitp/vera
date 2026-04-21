@@ -7,7 +7,7 @@ import click
 from rich.console import Console
 from rich.markdown import Markdown
 from .config import VERA_HOME, MEMORY_DIR, AUDIT_DIR, RULES_FILE, PROVENANCE_LOG, detect_provider
-from .provenance import SYSTEM_ADDENDUM, log_write
+from .provenance import SYSTEM_ADDENDUM, log_write, log_usage, spend_since
 from .rules import ensure_rules, check_response, DEFAULT_RULES
 from .llm import chat as _llm_chat
 from .audit import run_audit, build_share_snippet
@@ -142,7 +142,8 @@ def chat():
         system = build_system(rules_text, memory_summary)
 
         for attempt in range(2):
-            response = _llm_chat(provider, system, messages)
+            response, usage = _llm_chat(provider, system, messages)
+            log_usage(usage, source="chat", log_path=PROVENANCE_LOG)
             violation = check_response(response, rules_text)
             if not violation:
                 break
@@ -150,7 +151,8 @@ def chat():
                 {"role": "assistant", "content": response},
                 {"role": "user", "content": violation},
             ]
-            response = _llm_chat(provider, system, messages_retry)
+            response, usage = _llm_chat(provider, system, messages_retry)
+            log_usage(usage, source="chat-retry", log_path=PROVENANCE_LOG)
 
         messages.append({"role": "assistant", "content": response})
         console.print()
@@ -201,6 +203,9 @@ def status():
     console.print(f"Rules: {RULES_FILE} ({'exists' if RULES_FILE.exists() else 'missing'})")
     console.print(f"Memory: {len(list(MEMORY_DIR.glob('*.md'))) if MEMORY_DIR.exists() else 0} transcripts")
     console.print(f"Audits: {len(list(AUDIT_DIR.glob('*.md'))) if AUDIT_DIR.exists() else 0} reports")
+    usd, calls = spend_since(PROVENANCE_LOG, days=30)
+    if calls:
+        console.print(f"Spend (30d): ${usd:.2f} over {calls} calls")
 
 if __name__ == "__main__":
     main()
