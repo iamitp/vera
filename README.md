@@ -60,7 +60,7 @@ To avoid re-pasting every chat, put the prompt into Custom Instructions for a [C
 For users who want hard rule-blocking, a second independent auditor model, and markdown memory on disk.
 
 ```bash
-pipx install git+https://github.com/iamitp/vera
+pipx install vera-clerk
 export ANTHROPIC_API_KEY=sk-ant-...   # or OPENAI_API_KEY
 vera init && vera chat
 ```

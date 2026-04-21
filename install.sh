@@ -22,7 +22,7 @@ if ! command -v pipx >/dev/null 2>&1; then
 fi
 
 # 2. install vera
-pipx install --force git+https://github.com/iamitp/vera >/dev/null
+pipx install --force vera-clerk >/dev/null
 echo "✓ Vera installed."
 echo ""
 

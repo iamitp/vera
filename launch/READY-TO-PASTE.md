@@ -43,7 +43,7 @@ The conversation was about rewriting a payments service in Rust. The user mentio
 
 A sycophantic AI would have accepted the number and built recommendations on top. That's the point.
 
-For power users, a CLI (pipx install git+https://github.com/iamitp/vera@v0.1.0) adds a second independent auditor model, hard rule-blocking with regenerate, and on-disk markdown memory you can grep and sync. But the paste-in prompt covers 80% of the value in 30 seconds.
+For power users, a CLI (pipx install vera-clerk) adds a second independent auditor model, hard rule-blocking with regenerate, and on-disk markdown memory you can grep and sync. But the paste-in prompt covers 80% of the value in 30 seconds.
 
 Happy to answer questions about which failures each discipline catches, why I didn't just ship an extension, or how it compares to guard-rails / constitutional-AI patterns.
 ```
@@ -106,7 +106,7 @@ Vera doesn't fix hallucination. It makes it visible.
 ```
 For power users: a CLI adds a second independent model as the auditor, hard rule enforcement, and markdown memory on disk you own.
 
-pipx install git+https://github.com/iamitp/vera@v0.1.0
+pipx install vera-clerk
 
 But the paste-in prompt covers 80% of it in 30 seconds.
 
@@ -136,7 +136,7 @@ Also: type /audit and the model self-critiques for sycophancy, hedging, and unso
 
 Real example from a run against the Anthropic API this morning (examples/live-demo/ in the repo): the conversation was about a Rust rewrite, and the user said 400 ms of p99 was JSON serialisation of 50 kB. The /audit pass worked out the implied throughput (~0.1 MB/s, ~1000x too slow) and flagged it as likely measurement error.
 
-For power users, the CLI (pipx install git+https://github.com/iamitp/vera@v0.1.0) adds:
+For power users, the CLI (pipx install vera-clerk) adds:
 - A second independent model as auditor (not self-critique)
 - Hard rule enforcement (banned phrases fail the turn, model regenerates)
 - Markdown memory on disk you own
