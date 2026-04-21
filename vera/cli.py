@@ -1,7 +1,8 @@
-"""Vera CLI: init / chat / audit / rules."""
+"""Vera CLI: init / chat / audit / rules / prune / status."""
 from __future__ import annotations
+import json
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 import click
 from rich.console import Console
@@ -11,6 +12,8 @@ from .provenance import SYSTEM_ADDENDUM, log_write, log_usage, spend_since
 from .rules import ensure_rules, check_response, DEFAULT_RULES
 from .llm import chat as _llm_chat
 from .audit import run_audit, build_share_snippet
+
+ARCHIVE_DIRNAME = "_archive"
 
 console = Console()
 
@@ -61,13 +64,62 @@ def parse_captures(response: str) -> list[tuple[str, str]]:
             i += 1
     return out
 
+def _truncate_line(text: str, limit: int = 160) -> str:
+    line = text.strip().splitlines()[0] if text.strip() else ""
+    return line if len(line) <= limit else line[:limit].rstrip() + "…"
+
+
+def _recent_durable_facts(log_path: Path, days: int = 30, limit: int = 20) -> list[str]:
+    """Return deduped RULE / OBSERVED entries from the last N days."""
+    if not log_path.exists():
+        return []
+    cutoff = datetime.now() - timedelta(days=days)
+    seen: set[str] = set()
+    out: list[tuple[datetime, str, str]] = []
+    for raw in log_path.read_text().splitlines():
+        try:
+            entry = json.loads(raw)
+        except json.JSONDecodeError:
+            continue
+        if entry.get("kind") not in ("RULE", "OBSERVED"):
+            continue
+        try:
+            ts = datetime.fromisoformat(entry["ts"])
+        except (KeyError, ValueError):
+            continue
+        if ts < cutoff:
+            continue
+        content = _truncate_line(str(entry.get("content", "")))
+        if not content or content in seen:
+            continue
+        seen.add(content)
+        out.append((ts, entry["kind"], content))
+    out.sort(key=lambda x: x[0], reverse=True)
+    return [f"[{k}] {c}" for _, k, c in out[:limit]]
+
+
 def load_memory_summary() -> str:
-    if not MEMORY_DIR.exists():
-        return ""
-    items = []
-    for f in sorted(MEMORY_DIR.glob("*.md"))[-10:]:
-        items.append(f"- {f.stem}: {f.read_text()[:200]}")
-    return "\n".join(items)
+    """Compose the memory-summary block the chat system prompt sees.
+
+    Two layers: durable facts (RULE / OBSERVED captures in the last 30 days,
+    deduped) plus headlines from the last 5 transcripts. No mid-word
+    truncation — one line per entry, 160-char cap.
+    """
+    parts: list[str] = []
+    facts = _recent_durable_facts(PROVENANCE_LOG)
+    if facts:
+        parts.append("Durable facts (recent captures):")
+        parts.extend(f"- {f}" for f in facts)
+
+    if MEMORY_DIR.exists():
+        recent = sorted(MEMORY_DIR.glob("*.md"))[-5:]
+        if recent:
+            parts.append("")
+            parts.append("Recent transcripts:")
+            for f in recent:
+                first = _truncate_line(f.read_text())
+                parts.append(f"- {f.stem}: {first}" if first else f"- {f.stem}: (empty)")
+    return "\n".join(parts)
 
 @click.group()
 def main():
@@ -202,11 +254,57 @@ def rules():
     console.print(Markdown(ensure_rules(RULES_FILE)))
 
 @main.command()
+@click.option("--older-than", "older_than_days", type=int, default=90,
+              help="Archive transcripts older than N days (default 90).")
+@click.option("--keep", type=int, default=50,
+              help="Always keep at least N most-recent transcripts (default 50).")
+@click.option("--dry-run", is_flag=True, help="Show what would be moved, don't move.")
+def prune(older_than_days: int, keep: int, dry_run: bool):
+    """Archive old transcripts into MEMORY_DIR/_archive/ to cap disk growth."""
+    if not MEMORY_DIR.exists():
+        console.print(f"[dim]No memory dir at {MEMORY_DIR}; nothing to prune.[/dim]")
+        return
+    archive_dir = MEMORY_DIR / ARCHIVE_DIRNAME
+    transcripts = sorted(MEMORY_DIR.glob("*.md"), key=lambda p: p.stat().st_mtime)
+    if len(transcripts) <= keep:
+        console.print(
+            f"[dim]{len(transcripts)} transcripts ≤ keep={keep}; nothing to archive.[/dim]"
+        )
+        return
+    cutoff = datetime.now() - timedelta(days=older_than_days)
+    # Newest `keep` (by mtime) are never moved; consider only the older tail.
+    tail = transcripts[:-keep] if keep > 0 else transcripts
+    to_archive = [t for t in tail if datetime.fromtimestamp(t.stat().st_mtime) < cutoff]
+    if not to_archive:
+        console.print(
+            f"[dim]No transcripts older than {older_than_days} days beyond the last {keep}.[/dim]"
+        )
+        return
+    if dry_run:
+        console.print(
+            f"[yellow]Dry run — would archive {len(to_archive)} transcripts "
+            f"to {archive_dir}:[/yellow]"
+        )
+        for t in to_archive:
+            console.print(f"  {t.name}")
+        return
+    archive_dir.mkdir(parents=True, exist_ok=True)
+    for t in to_archive:
+        t.rename(archive_dir / t.name)
+    console.print(
+        f"[green]Archived {len(to_archive)} transcripts to {archive_dir}[/green]"
+    )
+
+
+@main.command()
 def status():
     """Show Vera state."""
     console.print(f"Home: {VERA_HOME}")
     console.print(f"Rules: {RULES_FILE} ({'exists' if RULES_FILE.exists() else 'missing'})")
     console.print(f"Memory: {len(list(MEMORY_DIR.glob('*.md'))) if MEMORY_DIR.exists() else 0} transcripts")
+    archive_dir = MEMORY_DIR / ARCHIVE_DIRNAME
+    if archive_dir.exists():
+        console.print(f"Archive: {len(list(archive_dir.glob('*.md')))} transcripts")
     console.print(f"Audits: {len(list(AUDIT_DIR.glob('*.md'))) if AUDIT_DIR.exists() else 0} reports")
     usd, calls = spend_since(PROVENANCE_LOG, days=30)
     if calls:
