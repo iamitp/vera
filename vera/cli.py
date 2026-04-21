@@ -141,18 +141,23 @@ def chat():
         memory_summary = load_memory_summary()
         system = build_system(rules_text, memory_summary)
 
-        for attempt in range(2):
-            response, usage = _llm_chat(provider, system, messages)
-            log_usage(usage, source="chat", log_path=PROVENANCE_LOG)
-            violation = check_response(response, rules_text)
-            if not violation:
-                break
+        response, usage = _llm_chat(provider, system, messages)
+        log_usage(usage, source="chat", log_path=PROVENANCE_LOG)
+        violation = check_response(response, rules_text)
+        if violation:
+            console.print(f"[dim]⟲ regenerating: {violation}[/dim]")
             messages_retry = messages + [
                 {"role": "assistant", "content": response},
                 {"role": "user", "content": violation},
             ]
             response, usage = _llm_chat(provider, system, messages_retry)
             log_usage(usage, source="chat-retry", log_path=PROVENANCE_LOG)
+            second_violation = check_response(response, rules_text)
+            if second_violation:
+                response = (
+                    f"{response}\n\n"
+                    f"> ⚠ rule layer disagreed twice: {second_violation}"
+                )
 
         messages.append({"role": "assistant", "content": response})
         console.print()
