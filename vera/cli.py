@@ -1,6 +1,7 @@
 """Vera CLI: init / chat / audit / rules / prune / status."""
 from __future__ import annotations
 import json
+import re
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -43,26 +44,58 @@ Behavioural contract:
   The CLI parses these captures and writes them to memory.
 """
 
-def parse_captures(response: str) -> list[tuple[str, str]]:
-    """Extract VERA-CAPTURE blocks from the model response."""
-    out = []
+_CAPTURE_LEADER = re.compile(r"^[\s>\-*]*")
+
+
+def _strip_leader(line: str) -> str:
+    """Drop leading whitespace, blockquote '>', and list bullets."""
+    return _CAPTURE_LEADER.sub("", line).strip()
+
+
+def parse_captures(response: str) -> tuple[list[tuple[str, str]], list[str]]:
+    """Extract VERA-CAPTURE blocks from the model response.
+
+    Returns (captures, warnings). A malformed block (marker present but
+    kind or content missing within the next 6 lines) adds a warning
+    instead of silently dropping. Accepts blockquote and list prefixes
+    and arbitrary indentation around the marker and its fields.
+    """
+    out: list[tuple[str, str]] = []
+    warnings: list[str] = []
     lines = response.splitlines()
     i = 0
     while i < len(lines):
-        if lines[i].strip() == "VERA-CAPTURE:":
+        stripped = _strip_leader(lines[i])
+        if stripped == "VERA-CAPTURE:":
             kind = content = ""
-            for j in range(i+1, min(i+4, len(lines))):
-                s = lines[j].strip()
-                if s.startswith("kind:"):
-                    kind = s.split(":",1)[1].strip()
-                elif s.startswith("content:"):
-                    content = s.split(":",1)[1].strip()
+            scanned = 0
+            for j in range(i + 1, min(i + 7, len(lines))):
+                s = _strip_leader(lines[j])
+                if not s:
+                    # Blank line between marker and first field is tolerated;
+                    # blank line after we've started reading fields ends the block.
+                    if kind or content:
+                        break
+                    continue
+                if s.lower().startswith("kind:"):
+                    kind = s.split(":", 1)[1].strip()
+                elif s.lower().startswith("content:"):
+                    content = s.split(":", 1)[1].strip()
+                else:
+                    # Non-field line ends the block.
+                    break
+                scanned = j - i
             if kind and content:
                 out.append((kind, content))
-            i += 3
+            else:
+                warnings.append(
+                    f"VERA-CAPTURE at line {i+1} missing "
+                    f"{'kind' if not kind else 'content'}"
+                )
+            i += max(scanned, 1)
         else:
             i += 1
-    return out
+    return out, warnings
 
 def _truncate_line(text: str, limit: int = 160) -> str:
     line = text.strip().splitlines()[0] if text.strip() else ""
@@ -217,12 +250,16 @@ def chat():
         console.print()
 
         # Capture user-stated facts / rules
-        for kind, content in parse_captures(response):
+        captures, capture_warnings = parse_captures(response)
+        for kind, content in captures:
             log_write(kind, content, source="chat", log_path=PROVENANCE_LOG)
             if kind == "RULE":
                 with RULES_FILE.open("a") as f:
                     f.write(f"\n- \"{content}\" (captured {datetime.now():%Y-%m-%d})\n")
                 rules_text = RULES_FILE.read_text()
+        for warn in capture_warnings:
+            console.print(f"[dim]warning: malformed capture skipped — {warn}[/dim]")
+            log_write("MALFORMED", warn, source="chat", log_path=PROVENANCE_LOG)
 
         with transcript_path.open("a") as f:
             f.write(f"## you\n{user_input}\n\n## vera\n{response}\n\n")

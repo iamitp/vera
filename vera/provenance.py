@@ -5,7 +5,9 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Literal
 
-ProvenanceKind = Literal["OBSERVED", "INFERRED", "ASSUMED", "CANDIDATE", "RULE", "EXTERNAL"]
+ProvenanceKind = Literal[
+    "OBSERVED", "INFERRED", "ASSUMED", "CANDIDATE", "RULE", "EXTERNAL", "MALFORMED",
+]
 
 SYSTEM_ADDENDUM = """
 PROVENANCE RULES (non-negotiable). Every factual claim you write into memory
