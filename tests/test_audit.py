@@ -82,7 +82,7 @@ def test_audit_cli_share_flag_writes_sibling(tmp_path, monkeypatch):
         "# Vera Audit 2026-04-15 14:30\n\n## Sycophancy\nClean.\n"
     )
 
-    monkeypatch.setattr(cli_mod, "run_audit", lambda provider, mem: report)
+    monkeypatch.setattr(cli_mod, "run_audit", lambda provider, mem, **kw: report)
     monkeypatch.setattr(cli_mod, "detect_provider", lambda: object())
     monkeypatch.setattr(cli_mod, "MEMORY_DIR", tmp_path / "memory")
 
@@ -92,3 +92,70 @@ def test_audit_cli_share_flag_writes_sibling(tmp_path, monkeypatch):
     share_path = report.with_suffix(".share.md")
     assert share_path.exists()
     assert "# What Vera caught in my own chat history" in share_path.read_text()
+
+
+def test_audit_cli_passes_flags_to_run_audit(tmp_path, monkeypatch):
+    from click.testing import CliRunner
+    from vera import cli as cli_mod
+
+    captured = {}
+
+    def fake_run_audit(provider, mem, **kw):
+        captured.update(kw)
+        out = tmp_path / "r.md"
+        out.write_text("# Vera Audit now\n\nclean\n")
+        return out
+
+    monkeypatch.setattr(cli_mod, "run_audit", fake_run_audit)
+    monkeypatch.setattr(cli_mod, "detect_provider", lambda: object())
+    monkeypatch.setattr(cli_mod, "MEMORY_DIR", tmp_path / "memory")
+
+    runner = CliRunner()
+    result = runner.invoke(
+        cli_mod.main,
+        ["audit", "--last", "2", "--since", "2026-04-01", "--model", "claude-haiku-4-5-20251001"],
+    )
+    assert result.exit_code == 0, result.output
+    assert captured["n"] == 2
+    assert str(captured["since"]) == "2026-04-01"
+    assert captured["model_override"] == "claude-haiku-4-5-20251001"
+
+
+def test_audit_cli_rejects_bad_since(tmp_path, monkeypatch):
+    from click.testing import CliRunner
+    from vera import cli as cli_mod
+
+    monkeypatch.setattr(cli_mod, "detect_provider", lambda: object())
+    runner = CliRunner()
+    result = runner.invoke(cli_mod.main, ["audit", "--since", "yesterday"])
+    assert result.exit_code != 0
+    assert "YYYY-MM-DD" in result.output
+
+
+def test_select_transcripts_respects_last_and_since(tmp_path):
+    import os
+    from datetime import datetime, timedelta
+    from vera.audit import _select_transcripts
+
+    for name, days in [("a.md", 100), ("b.md", 60), ("c.md", 30), ("d.md", 5), ("e.md", 1)]:
+        p = tmp_path / name
+        p.write_text("x")
+        ts = (datetime.now() - timedelta(days=days)).timestamp()
+        os.utime(p, (ts, ts))
+
+    picked = _select_transcripts(tmp_path, n=2, since=None)
+    assert [p.name for p in picked] == ["d.md", "e.md"]
+
+    cutoff = (datetime.now() - timedelta(days=45)).date()
+    picked = _select_transcripts(tmp_path, n=10, since=cutoff)
+    assert [p.name for p in picked] == ["c.md", "d.md", "e.md"]
+
+
+def test_detect_provider_reads_vera_audit_model(monkeypatch):
+    import importlib
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "x")
+    monkeypatch.setenv("VERA_AUDIT_MODEL", "claude-haiku-4-5-20251001")
+    import vera.config
+    importlib.reload(vera.config)
+    provider = vera.config.detect_provider()
+    assert provider.audit_model == "claude-haiku-4-5-20251001"

@@ -4,7 +4,7 @@ claims the user didn't push back on."""
 from __future__ import annotations
 import json
 import re
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from .config import Provider, AUDIT_DIR, PROVENANCE_LOG
 from .llm import chat
@@ -34,19 +34,40 @@ SHARE_FOOTER = (
 )
 
 
-def run_audit(provider: Provider, transcripts_dir: Path) -> Path:
+def _select_transcripts(
+    transcripts_dir: Path,
+    n: int,
+    since: date | None,
+) -> list[Path]:
+    if not transcripts_dir.exists():
+        return []
+    all_ = sorted(transcripts_dir.glob("*.md"), key=lambda p: p.stat().st_mtime)
+    if since is not None:
+        cutoff = datetime.combine(since, datetime.min.time()).timestamp()
+        all_ = [p for p in all_ if p.stat().st_mtime >= cutoff]
+    return all_[-n:] if n > 0 else all_
+
+
+def run_audit(
+    provider: Provider,
+    transcripts_dir: Path,
+    n: int = 5,
+    since: date | None = None,
+    model_override: str | None = None,
+) -> Path:
     AUDIT_DIR.mkdir(parents=True, exist_ok=True)
-    transcripts = sorted(transcripts_dir.glob("*.md"))[-5:]
+    transcripts = _select_transcripts(transcripts_dir, n, since)
     if not transcripts:
         out = AUDIT_DIR / f"{datetime.now():%Y-%m-%d}.md"
         out.write_text(f"# Vera Audit {datetime.now():%Y-%m-%d}\n\nNo transcripts to audit.\n")
         return out
     body = "\n\n---\n\n".join(t.read_text() for t in transcripts)
+    model = model_override or provider.audit_model
     resp, usage = chat(
         provider,
         AUDITOR_SYSTEM,
         [{"role": "user", "content": f"Audit these transcripts:\n\n{body}"}],
-        model=provider.audit_model,
+        model=model,
     )
     log_usage(usage, source="audit", log_path=PROVENANCE_LOG)
     out = AUDIT_DIR / f"{datetime.now():%Y-%m-%d_%H%M}.md"

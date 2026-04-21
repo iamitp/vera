@@ -234,10 +234,25 @@ def chat():
     is_flag=True,
     help="Also emit an anonymized, copy-pasteable snippet suitable for social media.",
 )
-def audit(share_flag: bool):
+@click.option("--last", "last_n", type=int, default=5,
+              help="Audit the last N transcripts by mtime (default 5).")
+@click.option("--since", "since_str", type=str, default=None,
+              help="Only audit transcripts touched on/after YYYY-MM-DD.")
+@click.option("--model", "model_override", type=str, default=None,
+              help="Override the audit model. Also reads VERA_AUDIT_MODEL.")
+def audit(share_flag: bool, last_n: int, since_str: str | None, model_override: str | None):
     """Run the adversarial auditor on recent transcripts."""
     provider = detect_provider()
-    out = run_audit(provider, MEMORY_DIR)
+    since = None
+    if since_str:
+        try:
+            since = datetime.strptime(since_str, "%Y-%m-%d").date()
+        except ValueError:
+            raise click.BadParameter("--since must be YYYY-MM-DD")
+    out = run_audit(
+        provider, MEMORY_DIR,
+        n=last_n, since=since, model_override=model_override,
+    )
     console.print(f"[green]Audit written:[/green] {out}")
     console.print()
     console.print(Markdown(out.read_text()))

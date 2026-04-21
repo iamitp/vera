@@ -18,8 +18,13 @@ class Provider:
     audit_model: str
 
 def detect_provider() -> Provider:
+    audit_override = os.environ.get("VERA_AUDIT_MODEL")
     if os.environ.get("ANTHROPIC_API_KEY"):
-        return Provider("anthropic", "claude-sonnet-4-6", "claude-opus-4-6")
+        return Provider(
+            "anthropic",
+            "claude-sonnet-4-6",
+            audit_override or "claude-opus-4-6",
+        )
     if os.environ.get("OPENAI_API_KEY"):
-        return Provider("openai", "gpt-4o", "gpt-4o")
+        return Provider("openai", "gpt-4o", audit_override or "gpt-4o")
     raise SystemExit("Set ANTHROPIC_API_KEY or OPENAI_API_KEY.")
